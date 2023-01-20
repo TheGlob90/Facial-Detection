@@ -2,6 +2,8 @@ import PySimpleGUI as sg
 import cv2
 import numpy as np
 import sys
+import os
+import Facial_Detection.data_collection as dc
 
 def main():
 
