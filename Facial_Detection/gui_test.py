@@ -72,7 +72,7 @@ def main():
                 elif count >= 30: # Take 30 face sample
                     break
             ft.main()# Trains the ML model after taking the images
-            sg.Popup('Face added as id #' + face_id + " and name " + values[1], keep_on_top = True) # Creates a popup telling the user the face was trained
+            sg.Popup('Face added as ID #' + face_id + " and name " + values[1], keep_on_top = True) # Creates a popup telling the user the face was trained
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
