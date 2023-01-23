@@ -3,11 +3,15 @@ import numpy as np
 from PIL import Image
 import os
 
+detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+
 def getImagesAndLabels(path):
     imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
     faceSamples=[]
     ids = []
     for imagePath in imagePaths:
+        if imagePath == 'dataset\\.gitignore':
+            continue
         PIL_img = Image.open(imagePath).convert('L') # grayscale
         img_numpy = np.array(PIL_img,'uint8')
         id = int(os.path.split(imagePath)[-1].split(".")[1])
@@ -21,7 +25,6 @@ def main():
     # Path for face image database
     path = 'dataset'
     recognizer = cv2.face.LBPHFaceRecognizer_create()
-    detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
     # function to get the images and label data
     print ("\n [INFO] Training faces. It will take a few seconds. Wait ...")
     faces,ids = getImagesAndLabels(path)

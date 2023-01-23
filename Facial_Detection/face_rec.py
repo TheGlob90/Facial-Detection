@@ -10,7 +10,7 @@ def main():
     font = cv2.FONT_HERSHEY_SIMPLEX
     #iniciate id counter
     id = 0
-    # names related to ids: example ==> Marcelo: id=1,  etc
+    # names related to ids: example ==> Brandon: id=1,  etc
     names = ['None', 'Brandon'] 
     # Initialize and start realtime video capture
     cam = cv2.VideoCapture(0)
@@ -33,8 +33,8 @@ def main():
             cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
             id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
         
-            # If confidence is less them 100 ==> "0" : perfect match 
-            if (confidence < 100):
+            # If confidence is less then 75 ==> "0" : perfect match 
+            if (confidence < 75):
                 id = names[id]
                 confidence = "  {0}%".format(round(100 - confidence))
             else:
@@ -68,3 +68,5 @@ def main():
     print("\n [INFO] Exiting Program and cleanup stuff")
     cam.release()
     cv2.destroyAllWindows()
+
+main()

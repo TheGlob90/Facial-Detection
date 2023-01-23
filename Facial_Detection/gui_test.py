@@ -3,9 +3,8 @@ import cv2
 import numpy as np
 import sys
 import os
-import data_collection as dc
 import face_training as ft
-import face_rec as fr
+# import face_rec as fr
 
 def main():
 
@@ -22,75 +21,14 @@ def main():
     ]
 
     #Define the window layour for the settings
-    layout2 = [[sg.Radio("None", "Radio", True, size=(10, 1))],
-        # [
-        #     sg.Radio("threshold", "Radio", size=(10, 1), key="-THRESH-"),
-        #     sg.Slider(
-        #         (0, 255),128,1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-THRESH SLIDER-",
-        #     ),
-        # ],
+    layout2 = [
+        [sg.Text('Enter the ID for the new face to be added.'), sg.InputText()],
+                                                                             
+        [sg.Text('Enter the name of the person being added.'), sg.InputText()],
 
-        # [
-        #     sg.Radio("canny", "Radio", size=(10, 1), key="-CANNY-"),
-        #     sg.Slider(
-        #         (0, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(20, 15),
-        #         key="-CANNY SLIDER A-",
-        #     ),
-        #     sg.Slider(
-        #         (0, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(20, 15),
-        #         key="-CANNY SLIDER B-",
-        #     ),
-        # ],
-        # [
-
-        #     sg.Radio("blur", "Radio", size=(10, 1), key="-BLUR-"),
-        #     sg.Slider(
-        #         (1, 11),
-        #         1,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-BLUR SLIDER-",
-        #     ),
-        # ],
-        # [
-
-        #     sg.Radio("hue", "Radio", size=(10, 1), key="-HUE-"),
-        #     sg.Slider(
-        #         (0, 225),
-        #         0,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-HUE SLIDER-",
-        #     ),
-        # ],
-        # [
-        #     sg.Radio("enhance", "Radio", size=(10, 1), key="-ENHANCE-"),
-        #     sg.Slider(
-        #         (1, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-ENHANCE SLIDER-",
-        #     ),
-        # ], 
+        [sg.Button("New Face")], # Button to add a new face to be trained
         
-        [sg.Button("New Face")],
-        
-        [sg.Button("EXIT")]]
+        [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
     tabgrp = [[sg.TabGroup([[sg.Tab('Camera', layout1, title_color='Black', border_width=10,tooltip='Camera', element_justification='center'),
                 sg.Tab('Settings', layout2, title_color='Black')]])]]
@@ -98,6 +36,7 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True)
 
+    # Video capture used by cv2 to run the camera.
     cap = cv2.VideoCapture(0)
 
 
@@ -108,8 +47,32 @@ def main():
 
         ret, frame = cap.read()
 
+        # New face button is pressed
         if event == "New Face":
-            dc.main()
+            # For each person, enter one numeric face id
+            # face_id = input('\n enter user id end press <return> ==>  ')
+            face_id = values[0]
+            print("\n [INFO] Initializing face capture. Look the camera and wait ...")
+            # Initialize individual sampling face count
+            count = 0
+            while(True):
+                ret, img = cap.read()
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                faces = faceCascade.detectMultiScale(gray, 1.3, 5)
+                for (x,y,w,h) in faces:
+                    cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)     
+                    count += 1
+                    # Save the captured image into the datasets folder
+                    cv2.imwrite("dataset/User." + str(face_id) + '.' +  
+                            str(count) + ".jpg", gray[y:y+h,x:x+w])
+                    cv2.imshow('image', img)
+                k = cv2.waitKey(100) & 0xff # Press 'ESC' for exiting video
+                if k == 27:
+                    break
+                elif count >= 30: # Take 30 face sample
+                    break
+            ft.main()# Trains the ML model after taking the images
+            sg.Popup('Face added as id #' + face_id + " and name " + values[1], keep_on_top = True) # Creates a popup telling the user the face was trained
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -125,32 +88,6 @@ def main():
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         numOfFaces = len(faces)
-
-        # if values["-THRESH-"]:
-        #     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)[:, :, 0]
-        #     frame = cv2.threshold(
-        #         frame, values["-THRESH SLIDER-"], 255, cv2.THRESH_BINARY
-        #     )[1]
-
-        # elif values["-CANNY-"]:
-        #     frame = cv2.Canny(
-        #         frame, values["-CANNY SLIDER A-"], values["-CANNY SLIDER B-"]
-        #     )
-
-        # elif values["-BLUR-"]:
-        #     frame = cv2.GaussianBlur(frame, (21, 21), values["-BLUR SLIDER-"])
-
-        # elif values["-HUE-"]:
-        #     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        #     frame[:, :, 0] += int(values["-HUE SLIDER-"])
-        #     frame = cv2.cvtColor(frame, cv2.COLOR_HSV2BGR)
-
-        # elif values["-ENHANCE-"]:
-        #     enh_val = values["-ENHANCE SLIDER-"] / 40
-        #     clahe = cv2.createCLAHE(clipLimit=enh_val, tileGridSize=(8, 8))
-        #     lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
-        #     lab[:, :, 0] = clahe.apply(lab[:, :, 0])
-        #     frame = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
 
         imgbytes = cv2.imencode(".png", frame)[1].tobytes()
         window["-IMAGE-"].update(data=imgbytes)
