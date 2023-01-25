@@ -2,15 +2,17 @@ import cv2
 import numpy as np
 import os 
 
-def main():
+def main(cascade):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
+    # Read the trained .yml file that was generated previously
     recognizer.read('trainer/trainer.yml')
-    cascadePath = "haarcascade_frontalface_default.xml"
-    faceCascade = cv2.CascadeClassifier(cascadePath);
+    # Give the type of cascade we are using at this time
+    faceCascade = cv2.CascadeClassifier(cascade)
     font = cv2.FONT_HERSHEY_SIMPLEX
     #iniciate id counter
     id = 0
     # names related to ids: example ==> Brandon: id=1,  etc
+    # TODO: Make the names be saved so you can add a new name when you add a new face
     names = ['None', 'Brandon'] 
     # Initialize and start realtime video capture
     cam = cv2.VideoCapture(0)
@@ -19,6 +21,8 @@ def main():
     # Define min window size to be recognized as a face
     minW = 0.1*cam.get(3)
     minH = 0.1*cam.get(4)
+    # Loop until we kill the program
+    # TODO: Make the program stop using the camera once we reconginze a face that we've saved
     while True:
         ret, img =cam.read()
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -34,6 +38,7 @@ def main():
             id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
         
             # If confidence is less then 75 ==> "0" : perfect match 
+            # The smaller the number confidence needs to be less than, the harder it is to get a match
             if (confidence < 75):
                 id = names[id]
                 confidence = "  {0}%".format(round(100 - confidence))
@@ -68,5 +73,3 @@ def main():
     print("\n [INFO] Exiting Program and cleanup stuff")
     cam.release()
     cv2.destroyAllWindows()
-
-main()

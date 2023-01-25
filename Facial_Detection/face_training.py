@@ -3,13 +3,13 @@ import numpy as np
 from PIL import Image
 import os
 
-detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
-def getImagesAndLabels(path):
+def getImagesAndLabels(path, detector):
     imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
     faceSamples=[]
     ids = []
     for imagePath in imagePaths:
+        # Keeps the gitignore file from being used during training
         if imagePath == 'dataset\\.gitignore':
             continue
         PIL_img = Image.open(imagePath).convert('L') # grayscale
@@ -21,13 +21,14 @@ def getImagesAndLabels(path):
             ids.append(id)
     return faceSamples,ids
 
-def main():
+def main(cascade):
+    detector = cv2.CascadeClassifier(cascade)
     # Path for face image database
     path = 'dataset'
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     # function to get the images and label data
     print ("\n [INFO] Training faces. It will take a few seconds. Wait ...")
-    faces,ids = getImagesAndLabels(path)
+    faces,ids = getImagesAndLabels(path, detector)
     recognizer.train(faces, np.array(ids))
     # Save the model into trainer/trainer.yml
     recognizer.write('trainer/trainer.yml') 
