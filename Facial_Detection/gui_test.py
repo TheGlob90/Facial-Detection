@@ -29,7 +29,7 @@ def main():
 
         [sg.Button("New Face")], # Button to add a new face to be trained
                    
-        [sg.Button("Facial Recognition")],
+        [sg.Button("Facial Recognition")], # Button to run the facial recognition software
         
         [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
@@ -38,7 +38,7 @@ def main():
                 sg.Tab('Settings', layout2, title_color='Black')]])]]
 
     # Create the window and show it without the plot
-    window = sg.Window("Facial Recognition", tabgrp, resizable=True)
+    window = sg.Window("Facial Recognition", tabgrp, resizable=True, scaling = 6)
 
     # # Video capture used by cv2 to run the camera.
     # cap = cv2.VideoCapture(0)
