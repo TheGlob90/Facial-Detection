@@ -55,6 +55,7 @@ def main():
         # New face button is pressed
         if event == "New Face":
             # For each person, enter one numeric face id
+            # TODO: Force the model not to start unless they have entered an ID and a name
             face_id = values[0]
             user_name = values[1]
             dc.main(face_id, user_name, cascPath)
