@@ -12,16 +12,19 @@ def main():
     global numOfFaces
     numOfFaces = 0
 
-    # Define the window layout for the camera
-    # TODO: Remove the camera so it only shows up when we are looking for a face.
-    #       Will most likely need to be taken care of in face_rec so we just call the function in there.
+    # names related to ids: example ==> Brandon: id=1,  etc
+    # Used for matching a face to a name
+    # TODO: Make the names be saved so you can add a new name when you add a new face
+    names = ['None', 'Brandon'] 
+
+    # Define the window layout for the intro screen.
     layout1 = [
         [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
         [sg.Button("Exit", size=(10, 1))],
 
     ]
 
-    #Define the window layour for the settings
+    #Define the window layout for the settings
     layout2 = [
         [sg.Text('Enter the ID for the new face to be added.'), sg.InputText()],
                                                                              
@@ -56,6 +59,7 @@ def main():
         if event == "New Face":
             # For each person, enter one numeric face id
             # TODO: Force the model not to start unless they have entered an ID and a name
+            # TODO: Don't allow them to write over an ID already used
             face_id = values[0]
             user_name = values[1]
             dc.main(face_id, user_name, cascPath)
@@ -66,7 +70,7 @@ def main():
             sg.Popup('Face added as ID #' + face_id + " and name " + values[1], keep_on_top = True)
 
         if event == "Facial Recognition":
-            fr.main(cascPath)
+            fr.main(cascPath, names)
 
 
         # # Converts camera image into grey image to be used for facial detection

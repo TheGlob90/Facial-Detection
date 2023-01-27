@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import os 
 
-def main(cascade):
+def main(cascade, names):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     # Read the trained .yml file that was generated previously
     recognizer.read('trainer/trainer.yml')
@@ -11,9 +11,6 @@ def main(cascade):
     font = cv2.FONT_HERSHEY_SIMPLEX
     #iniciate id counter
     id = 0
-    # names related to ids: example ==> Brandon: id=1,  etc
-    # TODO: Make the names be saved so you can add a new name when you add a new face
-    names = ['None', 'Brandon'] 
     # Initialize and start realtime video capture
     cam = cv2.VideoCapture(0)
     cam.set(3, 640) # set video widht
