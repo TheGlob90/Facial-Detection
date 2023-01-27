@@ -11,11 +11,14 @@ def main():
 
     global numOfFaces
     numOfFaces = 0
+    names = []
 
     # names related to ids: example ==> Brandon: id=1,  etc
     # Used for matching a face to a name
-    # TODO: Make the names be saved so you can add a new name when you add a new face
-    names = ['None', 'Brandon'] 
+    names_f = open("Names.txt", 'r')
+    for line in names_f:
+        names.append(line)
+    names_f.close()
 
     # Define the window layout for the intro screen.
     layout1 = [
@@ -62,6 +65,11 @@ def main():
             # TODO: Don't allow them to write over an ID already used
             face_id = values[0]
             user_name = values[1]
+            # Writes the new name to the text file to be loaded on startup
+            names_f = open("Names.txt", 'a')
+            names_f.write(user_name)
+            names_f.close()
+            # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
             # TODO: Add in a progress bar for training the model.
