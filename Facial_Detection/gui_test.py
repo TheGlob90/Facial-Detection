@@ -61,13 +61,21 @@ def main():
         # New face button is pressed
         if event == "New Face":
             # For each person, enter one numeric face id
-            # TODO: Force the model not to start unless they have entered an ID and a name
-            # TODO: Don't allow them to write over an ID already used
             face_id = values[0]
             user_name = values[1]
+            # Makes sure they have entered in both a name and ID for the user
+            if face_id == '' or user_name == '':
+                sg.Popup('Add a valid ID or name for the user', keep_on_top = True)
+                continue
+            # Makes sure the ID isn't already in use
+            # Goes based on the idea that Users will give increased IDs and not skip numbers
+            # Eg 1, 2, 3, etc 
+            if face_id <= str(len(names)):
+                sg.Popup('ID already in use', keep_on_top = True)
+                continue
             # Writes the new name to the text file to be loaded on startup
             names_f = open("Names.txt", 'a')
-            names_f.write(user_name)
+            names_f.write(user_name + '\n')
             names_f.close()
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
