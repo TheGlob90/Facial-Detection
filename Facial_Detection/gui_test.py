@@ -85,7 +85,7 @@ def main():
                 continue
             # Writes the new name to the text file to be loaded on startup
             names_f = open("Names.txt", 'a')
-            names_f.write(user_name + '\n')
+            names_f.write('\n' + user_name)
             names_f.close()
             names_f = open("Names.txt", 'r')
             for line in names_f:
