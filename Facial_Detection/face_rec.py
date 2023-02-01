@@ -9,7 +9,7 @@ def main(cascade, names):
     # Give the type of cascade we are using at this time
     faceCascade = cv2.CascadeClassifier(cascade)
     font = cv2.FONT_HERSHEY_SIMPLEX
-    #iniciate id counter
+    #indicate id counter
     id = 0
     # Initialize and start realtime video capture
     cam = cv2.VideoCapture(0)

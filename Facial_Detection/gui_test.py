@@ -6,6 +6,16 @@ import os
 import face_training as ft
 import face_rec as fr
 import data_collection as dc
+import threading
+
+def test():
+    print("Second thread\n")
+    test = 0
+    for i in range(10000000):
+        test = test + 1
+    print("Test = " + str(test) + "\n")
+    print("Thread 2 done \n")
+
 
 def main():
 
@@ -112,8 +122,16 @@ def main():
         # window['text'].update("Number of Faces: " + str(numOfFaces))
 
     window.close()
+    print("Thread 1 done \n")
 
 sg.theme('SystemDefault')
+mainThread = threading.Thread(target=main)
+commThread = threading.Thread(target=test)
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
-main()
+mainThread.start()
+commThread.start()
+
+mainThread.join()
+commThread.join()
+print("ENDED")

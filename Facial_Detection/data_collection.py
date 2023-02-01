@@ -8,7 +8,6 @@ def main(id_num, user_name, cascade):
     cam.set(4, 480) # set video height
     face_detector = cv2.CascadeClassifier(cascade)
     # For each person, enter one numeric face id
-    # face_id = input('\n enter user id end press <return> ==>  ')
     face_id = id_num
     print("\n [INFO] Initializing face capture. Look the camera and wait ...")
 
@@ -28,7 +27,7 @@ def main(id_num, user_name, cascade):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = face_detector.detectMultiScale(gray, 1.3, 5)
         # cv2.imshow('image', img)
-        # progress_bar.UpdateBar(count)
+        progress_bar.UpdateBar(count)
         imgbytes = cv2.imencode(".png", img)[1].tobytes()
         window["-IMAGE-"].update(data=imgbytes)
         for (x,y,w,h) in faces:
