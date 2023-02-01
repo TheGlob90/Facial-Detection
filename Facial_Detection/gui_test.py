@@ -87,6 +87,10 @@ def main():
             names_f = open("Names.txt", 'a')
             names_f.write(user_name + '\n')
             names_f.close()
+            names_f = open("Names.txt", 'r')
+            for line in names_f:
+                names.append(line)
+            names_f.close()
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
