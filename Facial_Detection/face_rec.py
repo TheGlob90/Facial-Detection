@@ -36,12 +36,10 @@ def main(cascade, names):
         
             # If confidence is less then 75 ==> "0" : perfect match 
             # The smaller the number confidence needs to be less than, the harder it is to get a match
-            if (confidence < 75):
-                id = names[id]
-                confidence = "  {0}%".format(round(100 - confidence))
+            if (confidence < 60):
+                id = names[id - 1] 
             else:
                 id = "unknown"
-                confidence = "  {0}%".format(round(100 - confidence))
         
             cv2.putText(
                         img, 
@@ -51,16 +49,7 @@ def main(cascade, names):
                         1, 
                         (255,255,255), 
                         2
-                    )
-            cv2.putText(
-                        img, 
-                        str(confidence), 
-                        (x+5,y+h-5), 
-                        font, 
-                        1, 
-                        (255,255,0), 
-                        1
-                    )  
+                    ) 
     
         cv2.imshow('camera',img) 
         k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video

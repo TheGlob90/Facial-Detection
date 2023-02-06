@@ -72,7 +72,7 @@ def main():
         # New face button is pressed
         if event == "New Face":
             # For each person, enter one numeric face id
-            face_id = values[0]
+            face_id = int(values[0])
             user_name = values[1]
             # Makes sure they have entered in both a name and ID for the user
             if face_id == '' or user_name == '':
@@ -81,13 +81,18 @@ def main():
             # Makes sure the ID isn't already in use
             # Goes based on the idea that Users will give increased IDs and not skip numbers
             # Eg 1, 2, 3, etc 
-            if face_id <= str(len(names)):
+            if face_id <= len(names):
                 sg.Popup('ID already in use', keep_on_top = True)
                 continue
             # Writes the new name to the text file to be loaded on startup
             names_f = open("Names.txt", 'a')
-            names_f.write('\n' + user_name)
-            names_f.close()
+            if face_id == 1:
+                names_f.seek(0,0)
+                names_f.write(user_name)
+                names_f.close()
+            else:
+                names_f.write('\n' + user_name)
+                names_f.close()
             names_f = open("Names.txt", 'r')
             for line in names_f:
                 names.append(line)
@@ -98,7 +103,7 @@ def main():
             # TODO: Add in a progress bar for training the model.
             ft.main(cascPath)
              # Creates a popup telling the user the face was trained
-            sg.Popup('Face added as ID #' + face_id + " and name " + values[1], keep_on_top = True)
+            sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
 
         if event == "Facial Recognition":
             fr.main(cascPath, names)
