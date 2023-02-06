@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import cv2
+# import tensorflow as tf
 import numpy as np
 import sys
 import os
@@ -54,7 +55,7 @@ def main():
                 sg.Tab('Settings', layout2, title_color='Black')]])]]
 
     # Create the window and show it without the plot
-    window = sg.Window("Facial Recognition", tabgrp, resizable=True, scaling = 6)
+    window = sg.Window("Facial Recognition", tabgrp, resizable=True)
 
     # # Video capture used by cv2 to run the camera.
     # cap = cv2.VideoCapture(0)
@@ -128,14 +129,23 @@ def main():
     window.close()
     print("Thread 1 done \n")
 
+# Sets the theme for the GUI
 sg.theme('SystemDefault')
+
+# Creates the threads that are used
 mainThread = threading.Thread(target=main)
 commThread = threading.Thread(target=test)
+
+# Reads in the cascade file to be used
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
+
+# Starts the two threads
 mainThread.start()
 commThread.start()
 
+# Joins the threads once they finish
 mainThread.join()
 commThread.join()
+
 print("ENDED")
