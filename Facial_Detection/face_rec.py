@@ -34,9 +34,9 @@ def main(cascade, names):
             cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
             id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
         
-            # If confidence is less then 75 ==> "0" : perfect match 
+            # If confidence is less then 70 ==> "0" : perfect match 
             # The smaller the number confidence needs to be less than, the harder it is to get a match
-            if (confidence < 60):
+            if (confidence < 70):
                 id = names[id - 1] 
             else:
                 id = "unknown"

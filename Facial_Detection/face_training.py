@@ -9,7 +9,7 @@ def getImagesAndLabels(path, detector):
     faceSamples=[]
     ids = []
     for imagePath in imagePaths:
-        # Keeps the gitignore file from being used during training
+        # Keeps the quality of life files from being used during training
         if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore') or (imagePath == 'dataset/representations_vgg_face.pkl') or (imagePath == 'dataset\\representations_vgg_face.pkl'):
             continue
         PIL_img = Image.open(imagePath).convert('L') # grayscale

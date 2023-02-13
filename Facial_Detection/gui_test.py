@@ -16,9 +16,6 @@ def test():
         test = test + 1
     print("Test = " + str(test) + "\n")
 
-    dfs = DeepFace.find(img_path = "dataset/Alex.1.1.jpg", db_path = "dataset", enforce_detection=False)
-    print(dfs)
-
     print("Thread 2 done \n")
 
 
@@ -34,7 +31,6 @@ def main():
     for line in names_f:
         names.append(line)
     names_f.close()
-    print(len(names))
 
     # Define the window layout for the intro screen.
     layout1 = [
@@ -52,6 +48,8 @@ def main():
         [sg.Button("New Face")], # Button to add a new face to be trained
                    
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
+
+        [sg.Button("DeepFace")],
         
         [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
@@ -62,17 +60,11 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True)
 
-    # # Video capture used by cv2 to run the camera.
-    # cap = cv2.VideoCapture(0)
-
 
     while True:
         event, values = window.read(timeout=20)
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
             break
-
-        # # Used to access the frames that the camera captures
-        # ret, frame = cap.read()
 
         # New face button is pressed
         if event == "New Face":
@@ -103,7 +95,6 @@ def main():
             last_line = names_f.readlines()[-1]
             names.append(last_line)
             names_f.close()
-            print(len(names))
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
@@ -115,29 +106,10 @@ def main():
 
         if event == "Facial Recognition":
             fr.main(cascPath, names)
+        
+        if event == "DeepFace":
+            DeepFace.stream(db_path='dataset')
 
-
-        # # Converts camera image into grey image to be used for facial detection
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        # # List that holds all of the faces detected within a frame
-        # faces = faceCascade.detectMultiScale(
-        #     gray,
-        #     scaleFactor=1.1,
-        #     minNeighbors=5,
-        #     minSize=(30, 30),
-        #     flags=cv2.FONT_HERSHEY_SIMPLEX
-        # )
-
-        # # Draw a rectangle around each face found in the frame at a time
-        # for (x, y, w, h) in faces:
-        #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-        # numOfFaces = len(faces)
-
-        # imgbytes = cv2.imencode(".png", frame)[1].tobytes()
-        # window["-IMAGE-"].update(data=imgbytes)
-        # window['text'].update("Number of Faces: " + str(numOfFaces))
 
     window.close()
     print("Thread 1 done \n")
