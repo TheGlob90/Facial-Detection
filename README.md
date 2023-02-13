@@ -1,7 +1,7 @@
 # Facial-Detection
 Before you start, make sure you have Python 3 installed and have cv2 and pillow installed.
 ```
-pip install pillow, opencv-python
+pip install pillow, opencv-contrib-python
 ```
 To run the program, run the command below.
 ```
