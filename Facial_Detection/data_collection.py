@@ -13,7 +13,7 @@ def main(id_num, user_name, cascade):
 
     # layout the window
     layout = [[sg.Text('A custom progress meter')],
-            [sg.ProgressBar(1000, orientation='h', size=(20, 20), key='progressbar')],
+            [sg.ProgressBar(30, orientation='h', size=(20, 20), key='progressbar')],
             [sg.Image(filename="", key="-IMAGE-")],
             [sg.Cancel()]]
     # create the window`

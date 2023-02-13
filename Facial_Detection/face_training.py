@@ -10,7 +10,7 @@ def getImagesAndLabels(path, detector):
     ids = []
     for imagePath in imagePaths:
         # Keeps the gitignore file from being used during training
-        if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore'):
+        if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore') or (imagePath == 'dataset/representations_vgg_face.pkl') or (imagePath == 'dataset\\representations_vgg_face.pkl'):
             continue
         PIL_img = Image.open(imagePath).convert('L') # grayscale
         img_numpy = np.array(PIL_img,'uint8')

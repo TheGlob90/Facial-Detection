@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 import cv2
-import tensorflow as tf
+from deepface import DeepFace
 import numpy as np
 import sys
 import os
@@ -15,6 +15,10 @@ def test():
     for i in range(10000000):
         test = test + 1
     print("Test = " + str(test) + "\n")
+
+    dfs = DeepFace.find(img_path = "dataset/Alex.1.1.jpg", db_path = "dataset", enforce_detection=False)
+    print(dfs)
+
     print("Thread 2 done \n")
 
 
@@ -30,6 +34,7 @@ def main():
     for line in names_f:
         names.append(line)
     names_f.close()
+    print(len(names))
 
     # Define the window layout for the intro screen.
     layout1 = [
@@ -72,21 +77,22 @@ def main():
         # New face button is pressed
         if event == "New Face":
             # For each person, enter one numeric face id
-            face_id = int(values[0])
+            face_id = values[0]
             user_name = values[1]
             # Makes sure they have entered in both a name and ID for the user
+            # TODO: Make sure they enter a number for ID and not a string
             if face_id == '' or user_name == '':
                 sg.Popup('Add a valid ID or name for the user', keep_on_top = True)
                 continue
             # Makes sure the ID isn't already in use
             # Goes based on the idea that Users will give increased IDs and not skip numbers
             # Eg 1, 2, 3, etc 
-            if face_id <= len(names):
+            if int(face_id) <= len(names):
                 sg.Popup('ID already in use', keep_on_top = True)
                 continue
             # Writes the new name to the text file to be loaded on startup
             names_f = open("Names.txt", 'a')
-            if face_id == 1:
+            if int(face_id) == 1:
                 names_f.seek(0,0)
                 names_f.write(user_name)
                 names_f.close()
@@ -94,13 +100,15 @@ def main():
                 names_f.write('\n' + user_name)
                 names_f.close()
             names_f = open("Names.txt", 'r')
-            for line in names_f:
-                names.append(line)
+            last_line = names_f.readlines()[-1]
+            names.append(last_line)
             names_f.close()
+            print(len(names))
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
             # TODO: Add in a progress bar for training the model.
+            sg.popup_no_wait('Adding new face, please wait a few moments.')
             ft.main(cascPath)
              # Creates a popup telling the user the face was trained
             sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
