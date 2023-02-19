@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from PIL import Image
+import PySimpleGUI as sg
 import os
 
 
@@ -8,6 +9,15 @@ def getImagesAndLabels(path, detector):
     imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
     faceSamples=[]
     ids = []
+    # layout the window
+    layout = [[sg.Text('Training facesm, please wait.')],
+            [sg.ProgressBar(imagePaths, orientation='h', size=(20, 20), key='progressbar')],
+            [sg.Cancel()]]
+    # create the window`
+    window = sg.Window('Custom Progress Meter', layout, modal = True)
+    progress_bar = window['progressbar']
+    # Initialize individual sampling face count
+    count = 0
     for imagePath in imagePaths:
         # Keeps the quality of life files from being used during training
         if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore') or (imagePath == 'dataset/representations_vgg_face.pkl') or (imagePath == 'dataset\\representations_vgg_face.pkl'):
@@ -19,6 +29,8 @@ def getImagesAndLabels(path, detector):
         for (x,y,w,h) in faces:
             faceSamples.append(img_numpy[y:y+h,x:x+w])
             ids.append(id)
+        count = count + 1
+        progress_bar.UpdateBar(count)
     return faceSamples,ids
 
 def main(cascade):

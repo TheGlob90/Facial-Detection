@@ -99,7 +99,6 @@ def main():
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
             # TODO: Add in a progress bar for training the model.
-            sg.popup_no_wait('Adding new face, please wait a few moments.')
             ft.main(cascPath)
              # Creates a popup telling the user the face was trained
             sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
@@ -107,8 +106,9 @@ def main():
         if event == "Facial Recognition":
             fr.main(cascPath, names)
         
+        # Press 'q' to quit
         if event == "DeepFace":
-            DeepFace.stream(db_path='dataset')
+            DeepFace.stream(db_path='dataset', detector_backend='opencv', enable_face_analysis=False, frame_threshold=20)
 
 
     window.close()

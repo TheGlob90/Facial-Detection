@@ -2,3 +2,4 @@ dataset\*
 trainer\*
 __pycache__/*
 *.pyc
+deepface\*
