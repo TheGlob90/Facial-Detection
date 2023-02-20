@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 import cv2
-from deepface import DeepFace
+# from deepface import DeepFace
 import numpy as np
 import sys
 import os
@@ -107,8 +107,8 @@ def main():
             fr.main(cascPath, names)
         
         # Press 'q' to quit
-        if event == "DeepFace":
-            DeepFace.stream(db_path='dataset', detector_backend='opencv', enable_face_analysis=False, frame_threshold=20)
+        # if event == "DeepFace":
+        #     DeepFace.stream(db_path='dataset', detector_backend='opencv', enable_face_analysis=False, frame_threshold=20)
 
 
     window.close()
