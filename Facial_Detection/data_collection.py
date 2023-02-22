@@ -32,10 +32,10 @@ def main(id_num, user_name, cascade):
         window["-IMAGE-"].update(data=imgbytes)
         for (x,y,w,h) in faces:
             cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)     
-            count += 1
             # Save the captured image into the datasets folder
             cv2.imwrite("dataset/" + str(user_name) + "." + str(face_id) + '.' +  
                         str(count) + ".jpg", gray[y:y+h,x:x+w])
+            count += 1
         k = cv2.waitKey(100) & 0xff # Press 'ESC' for exiting video
         if k == 27:
             break

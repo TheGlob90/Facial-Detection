@@ -11,7 +11,7 @@ def getImagesAndLabels(path, detector):
     ids = []
     # layout the window
     layout = [[sg.Text('Training facesm, please wait.')],
-            [sg.ProgressBar(imagePaths, orientation='h', size=(20, 20), key='progressbar')],
+            [sg.ProgressBar(len(imagePaths) - 1, orientation='h', size=(20, 20), key='progressbar')],
             [sg.Cancel()]]
     # create the window`
     window = sg.Window('Custom Progress Meter', layout, modal = True)
@@ -19,6 +19,7 @@ def getImagesAndLabels(path, detector):
     # Initialize individual sampling face count
     count = 0
     for imagePath in imagePaths:
+        # progress_bar.UpdateBar(count)
         # Keeps the quality of life files from being used during training
         if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore') or (imagePath == 'dataset/representations_vgg_face.pkl') or (imagePath == 'dataset\\representations_vgg_face.pkl'):
             continue
@@ -29,8 +30,7 @@ def getImagesAndLabels(path, detector):
         for (x,y,w,h) in faces:
             faceSamples.append(img_numpy[y:y+h,x:x+w])
             ids.append(id)
-        count = count + 1
-        progress_bar.UpdateBar(count)
+        count += 1
     return faceSamples,ids
 
 def main(cascade):
