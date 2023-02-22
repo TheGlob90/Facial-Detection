@@ -10,18 +10,18 @@ def getImagesAndLabels(path, detector):
     faceSamples=[]
     ids = []
     # layout the window
-    layout = [[sg.Text('Training facesm, please wait.')],
-            [sg.ProgressBar(len(imagePaths) - 1, orientation='h', size=(20, 20), key='progressbar')],
-            [sg.Cancel()]]
+    layout = [[sg.Text('Training faces, please wait.')],
+            [sg.ProgressBar(len(imagePaths) - 1, orientation='h', size=(20, 20), key='progressbar')]]
     # create the window`
     window = sg.Window('Custom Progress Meter', layout, modal = True)
     progress_bar = window['progressbar']
     # Initialize individual sampling face count
     count = 0
     for imagePath in imagePaths:
-        # progress_bar.UpdateBar(count)
+        event, values = window.read(timeout=20)
+        progress_bar.UpdateBar(count)
         # Keeps the quality of life files from being used during training
-        if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore') or (imagePath == 'dataset/representations_vgg_face.pkl') or (imagePath == 'dataset\\representations_vgg_face.pkl'):
+        if (imagePath == 'dataset\\.gitignore') or (imagePath == 'dataset/.gitignore'):
             continue
         PIL_img = Image.open(imagePath).convert('L') # grayscale
         img_numpy = np.array(PIL_img,'uint8')
@@ -31,6 +31,8 @@ def getImagesAndLabels(path, detector):
             faceSamples.append(img_numpy[y:y+h,x:x+w])
             ids.append(id)
         count += 1
+    window.close()
+    cv2.destroyAllWindows()
     return faceSamples,ids
 
 def main(cascade):
