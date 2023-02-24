@@ -16,8 +16,8 @@ def main(cascade, names):
     cam.set(3, 640) # set video widht
     cam.set(4, 480) # set video height
     # Define min window size to be recognized as a face
-    minW = 0.1*cam.get(3)
-    minH = 0.1*cam.get(4)
+    minW = 0.01*cam.get(3)
+    minH = 0.01*cam.get(4)
     # Loop until we kill the program
     # TODO: Make the program stop using the camera once we reconginze a face that we've saved
     while True:
@@ -37,7 +37,8 @@ def main(cascade, names):
             # If confidence is less then 70 ==> "0" : perfect match 
             # The smaller the number confidence needs to be less than, the harder it is to get a match
             if (confidence < 70):
-                id = names[id - 1] 
+                id = names[id - 1]
+                id = id.replace('\n', '')
             else:
                 id = "unknown"
         
