@@ -69,8 +69,7 @@ def main():
             face_id = values[0]
             user_name = values[1]
             # Makes sure they have entered in both a name and ID for the user
-            # TODO: Make sure they enter a number for ID and not a string
-            if face_id == '' or user_name == '':
+            if face_id == '' or user_name == '' or face_id.isnumeric() == False:
                 sg.Popup('Add a valid ID or name for the user', keep_on_top = True)
                 continue
             # Makes sure the ID isn't already in use
