@@ -60,3 +60,4 @@ def main(cascade, names):
     print("\n [INFO] Exiting Program and cleanup stuff")
     cam.release()
     cv2.destroyAllWindows()
+    return(str(id))

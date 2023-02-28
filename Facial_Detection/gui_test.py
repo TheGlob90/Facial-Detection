@@ -1,6 +1,5 @@
 import PySimpleGUI as sg
 import cv2
-# from deepface import DeepFace
 import numpy as np
 import sys
 import os
@@ -117,13 +116,13 @@ def main():
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
-            # TODO: Add in a progress bar for training the model.
             ft.main(cascPath)
              # Creates a popup telling the user the face was trained
             sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
 
         if event == "Facial Recognition":
-            fr.main(cascPath, names)
+            name = fr.main(cascPath, names)
+            sg.Popup('Welcome back ' + name, keep_on_top = True)
 
     window.close()
     print("Thread 1 done \n")
