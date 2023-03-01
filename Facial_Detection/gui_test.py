@@ -47,6 +47,8 @@ def main():
         [sg.Button("New Face")], # Button to add a new face to be trained
                    
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
+
+        [sg.Button("Keypad")],
         
         [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
@@ -55,9 +57,9 @@ def main():
                 sg.Tab('Settings', layout2, title_color='Black')]])]]
 
     # Create the window and show it without the plot
-    window = sg.Window("Facial Recognition", tabgrp, resizable=True)
+    window = sg.Window("Facial Recognition", tabgrp, resizable=True).Finalize()
 
-
+    keys_entered = ''
     while True:
         event, values = window.read(timeout=20)
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
@@ -119,9 +121,45 @@ def main():
              # Creates a popup telling the user the face was trained
             sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
 
+        # If the Facial Recognition button is clicked
         if event == "Facial Recognition":
             name = fr.main(cascPath, names)
             sg.Popup('Welcome back ' + name, keep_on_top = True)
+
+        # Used for showing us the keypad
+        # Needs to stay within the while loop or it will break
+        keypad_layout = [
+            [sg.Input('', size=(10, 1), key='input')],
+            [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('4')],
+            [sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8')],
+            [sg.Button('9'), sg.Button('0'), sg.Button('⏎', key='Submit'), sg.Button('Clear')],
+            [sg.Text('', size=(15, 1), font=('Helvetica', 18),
+                     text_color='red', key='out')],
+        ]
+
+        # If the keypad button is pressed
+        if event == "Keypad":
+            keypad = sg.Window('Keypad', keypad_layout,
+                        default_button_element_size=(5, 2),
+                        auto_size_buttons=False,
+                        grab_anywhere=False)
+            # Loop through until we close the keypad or enter a code
+            while True:
+                event, values = keypad.read()  # read the form
+                if event is None:  # if the X button clicked, just exit
+                    break
+                if event == 'Clear':  # clear keys if clear button
+                    keys_entered = ''
+                elif event in '1234567890':
+                    keys_entered = values['input']  # get what's been entered so far
+                    keys_entered += event  # add the new digit
+                elif event == 'Submit':
+                    keys_entered = values['input']
+                    break
+                # change the form to reflect current key string
+                keypad['input'].update(keys_entered)
+            keypad.close()
+            sg.Popup("Code entered: " + keys_entered, keep_on_top = True)
 
     window.close()
     print("Thread 1 done \n")
