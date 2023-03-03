@@ -199,7 +199,10 @@ def main():
                     keys_entered += event  # add the new digit
                 elif event == 'Submit':
                     keys_entered = values['input']
-                    break
+                    if keys_entered == '' or keys_entered.isnumeric() == False:
+                        sg.popup("Enter a valid code.", keep_on_top=True)
+                    else:
+                        break
                 # change the form to reflect current key string
                 keypad['input'].update(keys_entered)
             keypad.close()
