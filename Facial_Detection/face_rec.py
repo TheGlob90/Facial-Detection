@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os 
+import PySimpleGUI as sg
 
 def main(cascade, names):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
