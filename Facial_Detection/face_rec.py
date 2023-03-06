@@ -20,8 +20,10 @@ def main(cascade, names):
     minW = 0.01*cam.get(3)
     minH = 0.01*cam.get(4)
     # Loop until we kill the program
-    # TODO: Make the program stop using the camera once we reconginze a face that we've saved
-    while True:
+    count = 0
+    recognized = 0
+    num_of_times = []
+    while count <= 100:
         ret, img =cam.read()
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     
@@ -40,8 +42,11 @@ def main(cascade, names):
             if (confidence < 70):
                 id = names[id - 1]
                 id = id.replace('\n', '')
+                num_of_times.append(id)
+                recognized = recognized + 1
             else:
                 id = "unknown"
+                # recognized = 0
         
             cv2.putText(
                         img, 
@@ -57,7 +62,18 @@ def main(cascade, names):
         k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
         if k == 27:
             break
+        if recognized == 20:
+            highest_count = 0
+            for i in names:
+                current = num_of_times.count(i)
+                if(current > highest_count):
+                    highest_count = current
+                    id = names[i]
+            break
+        count = count + 1
     # Do a bit of cleanup
+    if count == 100:
+        id = "unknown"
     print("\n [INFO] Exiting Program and cleanup stuff")
     cam.release()
     cv2.destroyAllWindows()
