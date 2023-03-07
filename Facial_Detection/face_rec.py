@@ -64,11 +64,13 @@ def main(cascade, names):
             break
         if recognized == 20:
             highest_count = 0
+            loop_count = 0
             for i in names:
                 current = num_of_times.count(i)
                 if(current > highest_count):
                     highest_count = current
-                    id = str(names[i])
+                    id = str(names[loop_count])
+                loop_count = loop_count + 1
             break
         count = count + 1
     # Do a bit of cleanup
