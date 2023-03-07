@@ -4,8 +4,8 @@ import PySimpleGUI as sg
 
 def main(id_num, user_name, cascade):
     cam = cv2.VideoCapture(0)
-    cam.set(3, 640) # set video width
-    cam.set(4, 480) # set video height
+    cam.set(3, 480) # set video width
+    cam.set(4, 350) # set video height
     face_detector = cv2.CascadeClassifier(cascade)
     # For each person, enter one numeric face id
     face_id = id_num
@@ -17,7 +17,8 @@ def main(id_num, user_name, cascade):
             [sg.Image(filename="", key="-IMAGE-")],
             [sg.Cancel()]]
     # create the window`
-    window = sg.Window('Custom Progress Meter', layout, modal = True)
+    window = sg.Window('Custom Progress Meter', layout, modal = True, finalize=True)
+    window.Maximize()
     progress_bar = window['progressbar']
     # Initialize individual sampling face count
     count = 0
