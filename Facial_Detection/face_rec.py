@@ -68,7 +68,7 @@ def main(cascade, names):
                 current = num_of_times.count(i)
                 if(current > highest_count):
                     highest_count = current
-                    id = names[i]
+                    id = str(names[i])
             break
         count = count + 1
     # Do a bit of cleanup
