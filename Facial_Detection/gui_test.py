@@ -98,7 +98,7 @@ def main():
                 sg.Tab('Settings', layout2, title_color='Black')]])]]
 
     # Create the window and show it without the plot
-    window = sg.Window("Facial Recognition", tabgrp, resizable=True).Finalize()
+    window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
 
     keys_entered = ''
     while True:

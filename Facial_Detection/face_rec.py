@@ -15,7 +15,7 @@ def main(cascade, names):
     # Initialize and start realtime video capture
     cam = cv2.VideoCapture(0)
     cam.set(3, 480) # set video widht
-    cam.set(4, 400) # set video height
+    cam.set(4, 350) # set video height
     # Define min window size to be recognized as a face
     minW = 0.01*cam.get(3)
     minH = 0.01*cam.get(4)
