@@ -99,10 +99,11 @@ def main():
 
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
+    window.Maximize()
 
     keys_entered = ''
     while True:
-        event, values = window.read(timeout=20)
+        event, values = window.read()
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
             break
 
