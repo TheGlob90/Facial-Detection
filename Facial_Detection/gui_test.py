@@ -7,14 +7,14 @@ import face_training as ft
 import face_rec as fr
 import data_collection as dc
 import threading
+import bluetooth
 
 def test():
-    print("Second thread\n")
-    test = 0
-    for i in range(10000000):
-        test = test + 1
-    print("Test = " + str(test) + "\n")
+    nearby_devices = bluetooth.discover_devices(lookup_names=True)
+    print("Found {} devices.".format(len(nearby_devices)))
 
+    for addr, name in nearby_devices:
+        print("  {} - {}".format(addr, name))
     print("Thread 2 done \n")
 
 def keypad_f(code):

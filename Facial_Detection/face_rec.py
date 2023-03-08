@@ -46,7 +46,6 @@ def main(cascade, names):
                 recognized = recognized + 1
             else:
                 id = "unknown"
-                # recognized = 0
         
             cv2.putText(
                         img, 
