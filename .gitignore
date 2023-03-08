@@ -3,3 +3,5 @@ trainer\*
 __pycache__/*
 *.pyc
 deepface\*
+Names.txt
+Code.txt

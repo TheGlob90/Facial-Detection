@@ -74,7 +74,7 @@ def main(cascade, names):
             break
         count = count + 1
     # Do a bit of cleanup
-    if count == 100:
+    if count > 100:
         id = "unknown"
     print("\n [INFO] Exiting Program and cleanup stuff")
     cam.release()
