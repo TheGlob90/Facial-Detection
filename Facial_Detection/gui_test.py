@@ -8,13 +8,17 @@ import face_rec as fr
 import data_collection as dc
 import threading
 import bluetooth
+import time
 
-def test():
+def test(thread_name, window):
     nearby_devices = bluetooth.discover_devices(lookup_names=True)
     print("Found {} devices.".format(len(nearby_devices)))
 
     for addr, name in nearby_devices:
         print("  {} - {}".format(addr, name))
+
+    window.write_event_value(thread_name, 'ALARM')
+
     print("Thread 2 done \n")
 
 def keypad_f(code):
@@ -99,13 +103,23 @@ def main():
 
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
+    threading.Thread(target=test, args=('ALARM', window,), daemon=True).start()
     window.Maximize()
 
     keys_entered = ''
     while True:
         event, values = window.read()
+
+        if(event == "ALARM"):
+            name = fr.main(cascPath, names)
+            if name == "unknown":
+                keypad_f(code)
+            else:
+                sg.Popup('Welcome back ' + name, keep_on_top = True)
+
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
             break
+
 
         # New face button is pressed
         if event == "New Face":
@@ -214,25 +228,14 @@ def main():
             sg.Popup("New code: " + code, keep_on_top = True)
 
     window.close()
-    print("Thread 1 done \n")
 
 # Sets the theme for the GUI
 sg.theme('SystemDefault')
-
-# Creates the threads that are used
-mainThread = threading.Thread(target=main)
-commThread = threading.Thread(target=test)
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
 
-# Starts the two threads
-mainThread.start()
-commThread.start()
-
-# Joins the threads once they finish
-mainThread.join()
-commThread.join()
+main()
 
 print("ENDED")
