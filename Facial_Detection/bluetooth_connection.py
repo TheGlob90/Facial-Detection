@@ -16,7 +16,7 @@ def rx_and_echo():
             print(data)
             sock.send(data)
 
-nearby_devices = bluetooth.discover_devices(lookup_names=True)
+nearby_devices = discover_devices(lookup_names=True)
 print("Found {} devices.".format(len(nearby_devices)))
 
 for addr, name in nearby_devices:
