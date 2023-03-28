@@ -15,7 +15,13 @@ def rx_and_echo():
         if data:
             print(data)
             sock.send(data)
-            
+
+nearby_devices = bluetooth.discover_devices(lookup_names=True)
+print("Found {} devices.".format(len(nearby_devices)))
+
+for addr, name in nearby_devices:
+    print("  {} - {}".format(addr, name))
+
 #MAC address of ESP32
 addr = "54:43:B2:2B:A3:E2"
 #uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
