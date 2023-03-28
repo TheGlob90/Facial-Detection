@@ -7,22 +7,11 @@ import face_training as ft
 import face_rec as fr
 import data_collection as dc
 import threading
-import bluetooth
+import bluetooth_connection as bc
 import time
 
-def test(thread_name, window):
-    nearby_devices = bluetooth.discover_devices(lookup_names=True)
-    print("Found {} devices.".format(len(nearby_devices)))
-
-    for addr, name in nearby_devices:
-        print("  {} - {}".format(addr, name))
-
-    window.write_event_value(thread_name, 'ALARM')
-
-    print("Thread 2 done \n")
-
-def keypad_f(code):
-    keypad_layout = [
+# Defines the layout for our keypad window
+keypad_layout = [
             [sg.Input('', size=(10, 1), key='input')],
             [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('4')],
             [sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8')],
@@ -30,7 +19,15 @@ def keypad_f(code):
             [sg.Text('', size=(15, 1), font=('Helvetica', 18),
                      text_color='red', key='out')],
         ]
-    
+
+def test(thread_name, window):
+    bc.scan_devices()
+
+    window.write_event_value(thread_name, 'ALARM')
+
+    print("Thread 2 done \n")
+
+def keypad_f(code):
     keypad = sg.Window('ALARM!!', keypad_layout,
                         default_button_element_size=(5, 2),
                         auto_size_buttons=False,
@@ -184,17 +181,6 @@ def main():
                 keypad_f(code)
             else:
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
-
-        # Used for showing us the keypad
-        # Needs to stay within the while loop or it will break
-        keypad_layout = [
-            [sg.Input('', size=(10, 1), key='input')],
-            [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('4')],
-            [sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8')],
-            [sg.Button('9'), sg.Button('0'), sg.Button('⏎', key='Submit'), sg.Button('Clear')],
-            [sg.Text('', size=(15, 1), font=('Helvetica', 18),
-                     text_color='red', key='out')],
-        ]
 
         # If the keypad button is pressed
         if event == "New Code":
