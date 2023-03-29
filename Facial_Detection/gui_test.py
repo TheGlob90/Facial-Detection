@@ -21,7 +21,6 @@ keypad_layout = [
         ]
 
 def test(thread_name, window):
-    bc.scan_devices()
 
     window.write_event_value(thread_name, 'ALARM')
 
@@ -107,6 +106,7 @@ def main():
     while True:
         event, values = window.read()
 
+        # TODO: Add in alarm is user fails to deactivate
         if(event == "ALARM"):
             name = fr.main(cascPath, names)
             if name == "unknown":
