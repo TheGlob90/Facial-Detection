@@ -80,6 +80,8 @@ def main():
         code = line
     code_f.close()
 
+    bc.scan_devices()
+
     # Define the window layout for the intro screen.
     layout1 = [
         [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
