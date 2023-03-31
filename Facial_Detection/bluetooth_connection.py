@@ -38,9 +38,7 @@ def connect(addr):
     sock.connect((host, port))
 
     print("connected")
-    #input_and_send()
-    rx_and_echo(sock)
-    disconnect(sock)
+    return sock
 
 def disconnect(sock):
     sock.close()
@@ -51,7 +49,3 @@ addr = "54:43:B2:2B:A3:E2"
 #service_matches = find_service( uuid = uuid, address = addr )
 
 buf_size = 1024
-
-connect(addr)
-
-print("\n--- bye ---\n")

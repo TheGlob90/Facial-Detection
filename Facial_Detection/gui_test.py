@@ -10,6 +10,8 @@ import threading
 import bluetooth_connection as bc
 import time
 
+addr = "54:43:B2:2B:A3:E2"
+
 # Defines the layout for our keypad window
 keypad_layout = [
             [sg.Input('', size=(10, 1), key='input')],
@@ -21,10 +23,16 @@ keypad_layout = [
         ]
 
 def test(thread_name, window):
+    sock = bc.connect(addr)
+    while True:
+        ret = bc.rx_and_echo(sock)
+        if ret == 1:
+            window.write_event_value(thread_name, 'ALARM')
+        elif ret == 2:
+            break
+    bc.disconnect(sock)
 
-    window.write_event_value(thread_name, 'ALARM')
-
-    print("Thread 2 done \n")
+    print("Thread done \n")
 
 def keypad_f(code):
     keypad = sg.Window('ALARM!!', keypad_layout,
