@@ -10,7 +10,7 @@ import threading
 import bluetooth_connection as bc
 import time
 
-addr = "54:43:B2:2B:A3:E2"
+# addr = "54:43:B2:2B:A3:E2"
 
 # Defines the layout for our keypad window
 keypad_layout = [
@@ -22,7 +22,8 @@ keypad_layout = [
                      text_color='red', key='out')],
         ]
 
-def test(thread_name, window):
+def test(thread_name, window, addr):
+    print(addr)
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
@@ -80,7 +81,7 @@ def main():
         code = line
     code_f.close()
 
-    addr = bc.scan_devices()
+    scanaddr = bc.scan_devices()
 
     # Define the window layout for the intro screen.
     layout1 = [
@@ -109,7 +110,7 @@ def main():
 
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
-    threading.Thread(target=test, args=('ALARM', window,), daemon=True).start()
+    threading.Thread(target=test, args=('ALARM', window, scanaddr,), daemon=True).start()
     window.Maximize()
 
     keys_entered = ''
