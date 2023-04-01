@@ -80,7 +80,7 @@ def main():
         code = line
     code_f.close()
 
-    bc.scan_devices()
+    addr = bc.scan_devices()
 
     # Define the window layout for the intro screen.
     layout1 = [

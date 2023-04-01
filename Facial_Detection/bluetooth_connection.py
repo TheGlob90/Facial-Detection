@@ -14,6 +14,9 @@ def scan_devices():
 
     for addr, name in nearby_devices:
         print("  {} - {}".format(addr, name))
+        if name == "ESP32test":
+            ret = addr
+    return ret
 
 def connect(addr):
     service_matches = find_service( address = addr )
