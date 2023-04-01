@@ -23,7 +23,6 @@ keypad_layout = [
         ]
 
 def test(thread_name, window, addr):
-    print(addr)
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
