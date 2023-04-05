@@ -166,11 +166,9 @@ def main():
         names.append(line)
     names_f.close()
 
-    # Loads up the saved code from the code file so it can be saved through power cycles
-    code_f = open("Code.txt", 'r')
-    for line in code_f:
-        code = line
-    code_f.close()
+    with open('settings.json', 'r') as f:
+        setting_values = json.load(f)
+    code = setting_values['code']
 
     scanaddr = bc.scan_devices()
 

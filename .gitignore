@@ -5,3 +5,4 @@ __pycache__/*
 deepface\*
 Names.txt
 Code.txt
+settings.json
