@@ -166,10 +166,12 @@ def main():
         names.append(line)
     names_f.close()
 
+    # Reads in the code from the .json file
     with open('settings.json', 'r') as f:
         setting_values = json.load(f)
     code = setting_values['code']
 
+    # Returns the address for the ESP for connection
     scanaddr = bc.scan_devices()
 
     # Define the window layout for the intro screen.
@@ -189,7 +191,7 @@ def main():
                 
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
 
-        [sg.Button("New Code")], # Button used to change code
+        [sg.Button("Change settings")], # Button used to change code
         
         [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
@@ -206,7 +208,7 @@ def main():
     while True:
         event, values = window.read()
 
-        # TODO: Add in alarm is user fails to deactivate
+        # TODO: Add in alarm if user fails to deactivate
         if(event == "ALARM"):
             name = fr.main(cascPath, names)
             if name == "unknown":
@@ -214,6 +216,7 @@ def main():
             else:
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
 
+        # Exit event to close the GUI
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
             break
 
@@ -250,36 +253,9 @@ def main():
             else:
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
 
-        # If the keypad button is pressed
-        if event == "New Code":
-            keypad = sg.Window('Enter New Code', keypad_layout,
-                        default_button_element_size=(5, 2),
-                        auto_size_buttons=False,
-                        grab_anywhere=False)
-            # Loop through until we close the keypad or enter a code
-            while True:
-                event, values = keypad.read()  # read the form
-                if event is None:  # if the X button clicked, just exit
-                    break
-                if event == 'Clear':  # clear keys if clear button
-                    keys_entered = ''
-                elif event in '1234567890':
-                    keys_entered = values['input']  # get what's been entered so far
-                    keys_entered += event  # add the new digit
-                elif event == 'Submit':
-                    keys_entered = values['input']
-                    if keys_entered == '' or keys_entered.isnumeric() == False:
-                        sg.popup("Enter a valid code.", keep_on_top=True)
-                    else:
-                        break
-                # change the form to reflect current key string
-                keypad['input'].update(keys_entered)
-            keypad.close()
-            code = keys_entered
-            keys_entered = ''
-            with open('Code.txt', 'w') as code_f:
-                    code_f.writelines(code)
-            sg.Popup("New code: " + code, keep_on_top = True)
+        # Allows users to change the settings once the device is running
+        if event == "Change settings":
+            runSettings()
 
     window.close()
 
@@ -287,6 +263,7 @@ def main():
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
 
+# If settings file doesn't exist we need to generate it
 if(os.path.isfile('./settings.json') == False):
         runSettings()
 main()
