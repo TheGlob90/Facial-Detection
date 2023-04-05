@@ -90,22 +90,21 @@ def runSettings():
                     [sg.Text("Let's add some sensors to the system!", size=(60,1), justification="left")],
                     [sg.Button("Scan for Sensors")],
                     [sg.Listbox("", size=(80,5), key='DEVICES')],
-                    [sg.Button("Save Settings"), sg.Exit()],                   
+                    [sg.Button("Save Settings"), sg.Button("Exit", size=(10, 1))],                
     ]
 
     settings = sg.Window("(AI)-larm STARTUP", settings_layout, resizable=True, finalize=True)
 
     while True:
         event, values = settings.read()  # read the form
-        if event == sg.WIN_CLOSED or "Exit":  # if the X button clicked, just exit
+        if event == sg.WIN_CLOSED or event == "Exit":  # if the X button clicked, just exit
             break
-        elif event == "Scan for Sensors":
+        if event == "Scan for Sensors":
             # settings['DEVICES'].update(value='Scanning...')
             scanbt = bc.scan_devices()
-            settings['DEVICES'].update((scanbt),)
+            settings['DEVICES'].update((scanbt))
 
-        elif event == "Save Settings":
-
+        if event == "Save Settings":
             settings_saved = {
                         "device-name" : values['DEVICENAME'],
                         "code" : values['CODE'],
@@ -114,185 +113,181 @@ def runSettings():
                         # "sensors" : sensors,
                         # "names" : names
             }
-
             settings_json = json.dumps(settings_saved, indent=4)
-
             writeJSON("settings.json", settings_json)
             break
     settings.close()
-    main()
 
 def main():
     names = []
     code = ''
 
-    if(os.path.isfile('./settings.json') == False):
-        runSettings()
-    else:
-        # names related to ids: example ==> Brandon: id=1,  etc
-        # Used for matching a face to a name
-        names_f = open("Names.txt", 'r')
-        for line in names_f:
-            names.append(line)
-        names_f.close()
-        print(names)
-        print(type(names))
+    # names related to ids: example ==> Brandon: id=1,  etc
+    # Used for matching a face to a name
+    names_f = open("Names.txt", 'r')
+    for line in names_f:
+        names.append(line)
+    names_f.close()
+    print(names)
+    print(type(names))
 
-        # Loads up the saved code from the code file so it can be saved through power cycles
-        code_f = open("Code.txt", 'r')
-        for line in code_f:
-            code = line
-        code_f.close()
+    # Loads up the saved code from the code file so it can be saved through power cycles
+    code_f = open("Code.txt", 'r')
+    for line in code_f:
+        code = line
+    code_f.close()
 
-        scanaddr = bc.scan_devices()
+    scanaddr = bc.scan_devices()
 
-        # Define the window layout for the intro screen.
-        layout1 = [
-            [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
-            [sg.Button("Exit", size=(10, 1))],
+    # Define the window layout for the intro screen.
+    layout1 = [
+        [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
+        [sg.Button("Exit", size=(10, 1))],
 
-        ]
+    ]
 
-        #Define the window layout for the settings
-        layout2 = [
-            [sg.Text('Enter the ID for the new face to be added.'), sg.InputText()],
-                                                                                
-            [sg.Text('Enter the name of the person being added.'), sg.InputText()],
+    #Define the window layout for the settings
+    layout2 = [
+        [sg.Text('Enter the ID for the new face to be added.'), sg.InputText()],
+                                                                            
+        [sg.Text('Enter the name of the person being added.'), sg.InputText()],
 
-            [sg.Button("New Face")], # Button to add a new face to be trained
-                    
-            [sg.Button("Facial Recognition")], # Button to run the facial recognition software
+        [sg.Button("New Face")], # Button to add a new face to be trained
+                
+        [sg.Button("Facial Recognition")], # Button to run the facial recognition software
 
-            [sg.Button("New Code")], # Button used to change code
-            
-            [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
+        [sg.Button("New Code")], # Button used to change code
+        
+        [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
-        # Creates the tabs in the GUI so you can select a different one
-        tabgrp = [[sg.TabGroup([[sg.Tab('Welcome', layout1, title_color='Black', border_width=10,tooltip='Camera', element_justification='center'),
-                    sg.Tab('Settings', layout2, title_color='Black')]])]]
+    # Creates the tabs in the GUI so you can select a different one
+    tabgrp = [[sg.TabGroup([[sg.Tab('Welcome', layout1, title_color='Black', border_width=10,tooltip='Camera', element_justification='center'),
+                sg.Tab('Settings', layout2, title_color='Black')]])]]
 
-        # Create the window and show it without the plot
-        window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
-        threading.Thread(target=test, args=('ALARM', window, scanaddr,), daemon=True).start()
-        window.Maximize()
+    # Create the window and show it without the plot
+    window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
+    threading.Thread(target=test, args=('ALARM', window, scanaddr,), daemon=True).start()
+    window.Maximize()
 
-        keys_entered = ''
-        while True:
-            event, values = window.read()
+    keys_entered = ''
+    while True:
+        event, values = window.read()
 
-            # TODO: Add in alarm is user fails to deactivate
-            if(event == "ALARM"):
-                name = fr.main(cascPath, names)
-                if name == "unknown":
-                    keypad_f(code)
-                else:
-                    sg.Popup('Welcome back ' + name, keep_on_top = True)
+        # TODO: Add in alarm is user fails to deactivate
+        if(event == "ALARM"):
+            name = fr.main(cascPath, names)
+            if name == "unknown":
+                keypad_f(code)
+            else:
+                sg.Popup('Welcome back ' + name, keep_on_top = True)
 
-            if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
-                break
+        if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
+            break
 
 
-            # New face button is pressed
-            if event == "New Face":
-                # For each person, enter one numeric face id
-                face_id = values[0]
-                user_name = values[1]
-                # Makes sure they have entered in both a name and ID for the user
-                if face_id == '' or user_name == '' or face_id.isnumeric() == False:
-                    sg.Popup('Add a valid ID or name for the user', keep_on_top = True)
-                    continue
-                # Makes sure the ID isn't already in use
-                # Goes based on the idea that Users will give increased IDs and not skip numbers
-                # Eg 1, 2, 3, etc 
-                if int(face_id) <= len(names) and not(names[int(face_id) - 1] == '\n'):
-                    sg.Popup('ID already in use', keep_on_top = True)
-                    continue
-                # Writes the new name to the text file to be loaded on startup
-                # Takes care of the name if it is the first ID
-                if int(face_id) == 1:
-                    names_f = open("Names.txt", 'a')
-                    names_f.seek(0,0)
-                    names_f.write(user_name)
-                    names_f.close()
-                    names_f = open("Names.txt", 'r')
-                    last_line = names_f.readlines()[-1]
-                    names.append(last_line)
-                    names_f.close()
-                # Adding an ID back on the end
-                elif int(face_id) > len(names):
-                    names_f = open("Names.txt", 'a')
-                    names_f.write('\n' + user_name)
-                    names_f.close()
-                    names_f = open("Names.txt", 'r')
-                    last_line = names_f.readlines()[-1]
-                    names.append(last_line)
-                    names_f.close()
-                # If an ID gets removed and we want to overwite the now empty spot
-                elif names[int(face_id) - 1] == '\n':
-                    file_contents = []
-                    with open('Names.txt', 'r') as names_f:
-                        file_contents = names_f.readlines()
-                    names_f.close()
-                    user_name += '\n'
-                    file_contents[int(face_id) - 1] = user_name
-                    with open('Names.txt', 'w') as names_f:
-                        names_f.writelines(file_contents)
-                    names_f.close()
-                    # Data collection can't handle having the '\n' character so it must be removed
-                    user_name = user_name.replace('\n', '')
-                    names[int(face_id) - 1] = user_name
-                # Calls the data collection function
-                dc.main(face_id, user_name, cascPath)
-                # Trains the ML model after taking the images
-                ft.main(cascPath)
-                # Creates a popup telling the user the face was trained
-                sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
+        # New face button is pressed
+        if event == "New Face":
+            # For each person, enter one numeric face id
+            face_id = values[0]
+            user_name = values[1]
+            # Makes sure they have entered in both a name and ID for the user
+            if face_id == '' or user_name == '' or face_id.isnumeric() == False:
+                sg.Popup('Add a valid ID or name for the user', keep_on_top = True)
+                continue
+            # Makes sure the ID isn't already in use
+            # Goes based on the idea that Users will give increased IDs and not skip numbers
+            # Eg 1, 2, 3, etc 
+            if int(face_id) <= len(names) and not(names[int(face_id) - 1] == '\n'):
+                sg.Popup('ID already in use', keep_on_top = True)
+                continue
+            # Writes the new name to the text file to be loaded on startup
+            # Takes care of the name if it is the first ID
+            if int(face_id) == 1:
+                names_f = open("Names.txt", 'a')
+                names_f.seek(0,0)
+                names_f.write(user_name)
+                names_f.close()
+                names_f = open("Names.txt", 'r')
+                last_line = names_f.readlines()[-1]
+                names.append(last_line)
+                names_f.close()
+            # Adding an ID back on the end
+            elif int(face_id) > len(names):
+                names_f = open("Names.txt", 'a')
+                names_f.write('\n' + user_name)
+                names_f.close()
+                names_f = open("Names.txt", 'r')
+                last_line = names_f.readlines()[-1]
+                names.append(last_line)
+                names_f.close()
+            # If an ID gets removed and we want to overwite the now empty spot
+            elif names[int(face_id) - 1] == '\n':
+                file_contents = []
+                with open('Names.txt', 'r') as names_f:
+                    file_contents = names_f.readlines()
+                names_f.close()
+                user_name += '\n'
+                file_contents[int(face_id) - 1] = user_name
+                with open('Names.txt', 'w') as names_f:
+                    names_f.writelines(file_contents)
+                names_f.close()
+                # Data collection can't handle having the '\n' character so it must be removed
+                user_name = user_name.replace('\n', '')
+                names[int(face_id) - 1] = user_name
+            # Calls the data collection function
+            dc.main(face_id, user_name, cascPath)
+            # Trains the ML model after taking the images
+            ft.main(cascPath)
+            # Creates a popup telling the user the face was trained
+            sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
 
-            # If the Facial Recognition button is clicked
-            if event == "Facial Recognition":
-                name = fr.main(cascPath, names)
-                if name == "unknown":
-                    keypad_f(code)
-                else:
-                    sg.Popup('Welcome back ' + name, keep_on_top = True)
+        # If the Facial Recognition button is clicked
+        if event == "Facial Recognition":
+            name = fr.main(cascPath, names)
+            if name == "unknown":
+                keypad_f(code)
+            else:
+                sg.Popup('Welcome back ' + name, keep_on_top = True)
 
-            # If the keypad button is pressed
-            if event == "New Code":
-                keypad = sg.Window('Enter New Code', keypad_layout,
-                            default_button_element_size=(5, 2),
-                            auto_size_buttons=False,
-                            grab_anywhere=False)
-                # Loop through until we close the keypad or enter a code
-                while True:
-                    event, values = keypad.read()  # read the form
-                    if event is None:  # if the X button clicked, just exit
+        # If the keypad button is pressed
+        if event == "New Code":
+            keypad = sg.Window('Enter New Code', keypad_layout,
+                        default_button_element_size=(5, 2),
+                        auto_size_buttons=False,
+                        grab_anywhere=False)
+            # Loop through until we close the keypad or enter a code
+            while True:
+                event, values = keypad.read()  # read the form
+                if event is None:  # if the X button clicked, just exit
+                    break
+                if event == 'Clear':  # clear keys if clear button
+                    keys_entered = ''
+                elif event in '1234567890':
+                    keys_entered = values['input']  # get what's been entered so far
+                    keys_entered += event  # add the new digit
+                elif event == 'Submit':
+                    keys_entered = values['input']
+                    if keys_entered == '' or keys_entered.isnumeric() == False:
+                        sg.popup("Enter a valid code.", keep_on_top=True)
+                    else:
                         break
-                    if event == 'Clear':  # clear keys if clear button
-                        keys_entered = ''
-                    elif event in '1234567890':
-                        keys_entered = values['input']  # get what's been entered so far
-                        keys_entered += event  # add the new digit
-                    elif event == 'Submit':
-                        keys_entered = values['input']
-                        if keys_entered == '' or keys_entered.isnumeric() == False:
-                            sg.popup("Enter a valid code.", keep_on_top=True)
-                        else:
-                            break
-                    # change the form to reflect current key string
-                    keypad['input'].update(keys_entered)
-                keypad.close()
-                code = keys_entered
-                keys_entered = ''
-                with open('Code.txt', 'w') as code_f:
-                        code_f.writelines(code)
-                sg.Popup("New code: " + code, keep_on_top = True)
+                # change the form to reflect current key string
+                keypad['input'].update(keys_entered)
+            keypad.close()
+            code = keys_entered
+            keys_entered = ''
+            with open('Code.txt', 'w') as code_f:
+                    code_f.writelines(code)
+            sg.Popup("New code: " + code, keep_on_top = True)
 
-        window.close()
+    window.close()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
 
+if(os.path.isfile('./settings.json') == False):
+        runSettings()
 main()
 
 print("ENDED")
