@@ -49,6 +49,7 @@ print(type(json_object))
 name_temp = json_object["names"]
 print("names: ")
 print(name_temp)
+print(type(names))
 
 sens_temp = json_object["sensors"]
 for entry in range(len(sens_temp)): 
