@@ -5,8 +5,7 @@ def rx_and_echo(sock):
     while True:
         data = sock.recv(buf_size)
         if data:
-            print(data)
-            sock.send(data)
+            return data
 
 def scan_devices():
     nearby_devices = discover_devices(lookup_names=True)
