@@ -130,6 +130,7 @@ def runSettings():
     ]
 
     settings = sg.Window("(AI)-larm STARTUP", settings_layout, resizable=True, finalize=True)
+    settings.maximize()
 
     while True:
         event, values = settings.read()  # read the form
