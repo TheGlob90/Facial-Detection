@@ -16,6 +16,7 @@ sg.theme('SystemDefault')
 
 # addr = "54:43:B2:2B:A3:E2"
 
+# Adds a new face to the facial recgonition
 def newFace(face_id, names):
     # Writes the new name to the text file to be loaded on startup
             # Takes care of the name if it is the first ID
@@ -68,6 +69,7 @@ keypad_layout = [
                      text_color='red', key='out')],
         ]
 
+# Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
     sock = bc.connect(addr)
     while True:
