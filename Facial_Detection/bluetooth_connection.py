@@ -11,11 +11,15 @@ def scan_devices():
     nearby_devices = discover_devices(lookup_names=True)
     print("Found {} devices.".format(len(nearby_devices)))
 
-    ret = ""
-    for addr, name in nearby_devices:
-        print("  {} - {}".format(addr, name))
-        if name == "ESP32test":
-            ret = addr
+    ret = []
+    if(len(nearby_devices) == 0):
+        ret += ["Found 0 Devices."]
+    else:
+        for addr, name in nearby_devices:
+            print("  {} - {}".format(addr, name))
+            ret += ["Device: {} Address {}".format(name, addr)]
+            if name == "ESP32test":
+                ret += addr
     return ret
 
 def connect(addr):
