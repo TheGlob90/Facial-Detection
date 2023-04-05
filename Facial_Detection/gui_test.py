@@ -16,6 +16,42 @@ sg.theme('SystemDefault')
 
 # addr = "54:43:B2:2B:A3:E2"
 
+def newFace(face_id, names):
+    # Writes the new name to the text file to be loaded on startup
+            # Takes care of the name if it is the first ID
+            if int(face_id) == 1:
+                names_f = open("Names.txt", 'a')
+                names_f.seek(0,0)
+                names_f.write(user_name)
+                names_f.close()
+                names_f = open("Names.txt", 'r')
+                last_line = names_f.readlines()[-1]
+                names.append(last_line)
+                names_f.close()
+            # Adding an ID back on the end
+            elif int(face_id) > len(names):
+                names_f = open("Names.txt", 'a')
+                names_f.write('\n' + user_name)
+                names_f.close()
+                names_f = open("Names.txt", 'r')
+                last_line = names_f.readlines()[-1]
+                names.append(last_line)
+                names_f.close()
+            # If an ID gets removed and we want to overwite the now empty spot
+            elif names[int(face_id) - 1] == '\n':
+                file_contents = []
+                with open('Names.txt', 'r') as names_f:
+                    file_contents = names_f.readlines()
+                names_f.close()
+                user_name += '\n'
+                file_contents[int(face_id) - 1] = user_name
+                with open('Names.txt', 'w') as names_f:
+                    names_f.writelines(file_contents)
+                names_f.close()
+                # Data collection can't handle having the '\n' character so it must be removed
+                user_name = user_name.replace('\n', '')
+                names[int(face_id) - 1] = user_name
+
 # Writing to sample.json
 def writeJSON(filename, data):
   with open(str(filename), "w") as outfile:
@@ -32,7 +68,7 @@ keypad_layout = [
                      text_color='red', key='out')],
         ]
 
-def test(thread_name, window, addr):
+def threads(thread_name, window, addr):
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
@@ -128,8 +164,6 @@ def main():
     for line in names_f:
         names.append(line)
     names_f.close()
-    print(names)
-    print(type(names))
 
     # Loads up the saved code from the code file so it can be saved through power cycles
     code_f = open("Code.txt", 'r')
@@ -140,14 +174,14 @@ def main():
     scanaddr = bc.scan_devices()
 
     # Define the window layout for the intro screen.
-    layout1 = [
+    homescreen = [
         [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
         [sg.Button("Exit", size=(10, 1))],
 
     ]
 
     #Define the window layout for the settings
-    layout2 = [
+    settings = [
         [sg.Text('Enter the ID for the new face to be added.'), sg.InputText()],
                                                                             
         [sg.Text('Enter the name of the person being added.'), sg.InputText()],
@@ -161,12 +195,12 @@ def main():
         [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
     # Creates the tabs in the GUI so you can select a different one
-    tabgrp = [[sg.TabGroup([[sg.Tab('Welcome', layout1, title_color='Black', border_width=10,tooltip='Camera', element_justification='center'),
-                sg.Tab('Settings', layout2, title_color='Black')]])]]
+    tabgrp = [[sg.TabGroup([[sg.Tab('Welcome', homescreen, title_color='Black', border_width=10,tooltip='Camera', element_justification='center'),
+                sg.Tab('Settings', settings, title_color='Black')]])]]
 
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
-    threading.Thread(target=test, args=('ALARM', window, scanaddr,), daemon=True).start()
+    threading.Thread(target=threads, args=('ALARM', window, scanaddr,), daemon=True).start()
     window.Maximize()
 
     keys_entered = ''
@@ -200,40 +234,8 @@ def main():
             if int(face_id) <= len(names) and not(names[int(face_id) - 1] == '\n'):
                 sg.Popup('ID already in use', keep_on_top = True)
                 continue
-            # Writes the new name to the text file to be loaded on startup
-            # Takes care of the name if it is the first ID
-            if int(face_id) == 1:
-                names_f = open("Names.txt", 'a')
-                names_f.seek(0,0)
-                names_f.write(user_name)
-                names_f.close()
-                names_f = open("Names.txt", 'r')
-                last_line = names_f.readlines()[-1]
-                names.append(last_line)
-                names_f.close()
-            # Adding an ID back on the end
-            elif int(face_id) > len(names):
-                names_f = open("Names.txt", 'a')
-                names_f.write('\n' + user_name)
-                names_f.close()
-                names_f = open("Names.txt", 'r')
-                last_line = names_f.readlines()[-1]
-                names.append(last_line)
-                names_f.close()
-            # If an ID gets removed and we want to overwite the now empty spot
-            elif names[int(face_id) - 1] == '\n':
-                file_contents = []
-                with open('Names.txt', 'r') as names_f:
-                    file_contents = names_f.readlines()
-                names_f.close()
-                user_name += '\n'
-                file_contents[int(face_id) - 1] = user_name
-                with open('Names.txt', 'w') as names_f:
-                    names_f.writelines(file_contents)
-                names_f.close()
-                # Data collection can't handle having the '\n' character so it must be removed
-                user_name = user_name.replace('\n', '')
-                names[int(face_id) - 1] = user_name
+            # Adds the new face to the settings file
+            newFace(face_id, names)
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
