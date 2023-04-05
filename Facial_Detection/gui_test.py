@@ -82,14 +82,18 @@ def threads(thread_name, window, addr):
 
     print("Thread done \n")
 
-def keypad_f(code):
+# Runs the keypad once the alarm has been triggered
+def keypad_f(code, timeout):
     keypad = sg.Window('ALARM!!', keypad_layout,
                         default_button_element_size=(5, 2),
                         auto_size_buttons=False,
                         grab_anywhere=False)
+    count = 0
+    keys_entered = ''
     # Loop through until we close the keypad or enter a code
-    while True:
-            event, values = keypad.read()  # read the form
+    while count < int(timeout):
+            event, values = keypad.read(timeout=10)  # read the form
+            count = count + 1
             if event is None:  # if the X button clicked, just exit
                 break
             if event == 'Clear':  # clear keys if clear button
@@ -108,7 +112,6 @@ def keypad_f(code):
                 # change the form to reflect current key string
             keypad['input'].update(keys_entered)
     keypad.close()
-    keys_entered = ''
 
 def runSettings():
     #Settings Layout
@@ -159,7 +162,6 @@ def runSettings():
 
 def main():
     names = []
-    code = ''
 
     # names related to ids: example ==> Brandon: id=1,  etc
     # Used for matching a face to a name
@@ -171,7 +173,6 @@ def main():
     # Reads in the code from the .json file
     with open('settings.json', 'r') as f:
         setting_values = json.load(f)
-    code = setting_values['code']
 
     # Returns the address for the ESP for connection
     scanaddr = bc.scan_devices()
@@ -214,7 +215,7 @@ def main():
         if(event == "ALARM"):
             name = fr.main(cascPath, names)
             if name == "unknown":
-                keypad_f(code)
+                keypad_f(setting_values['code'], setting_values['code-timeout'])
             else:
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
 
@@ -249,15 +250,18 @@ def main():
 
         # If the Facial Recognition button is clicked
         if event == "Facial Recognition":
-            name = fr.main(cascPath, names)
+            name = fr.main(cascPath, names, setting_values['face-timeout'])
             if name == "unknown":
-                keypad_f(code)
+                keypad_f(setting_values['code'], setting_values['code-timeout'])
             else:
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
 
         # Allows users to change the settings once the device is running
         if event == "Change settings":
             runSettings()
+            # Reads in the code from the .json file
+            with open('settings.json', 'r') as f:
+                setting_values = json.load(f)
 
     window.close()
 

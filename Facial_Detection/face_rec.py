@@ -3,7 +3,7 @@ import numpy as np
 import os 
 import PySimpleGUI as sg
 
-def main(cascade, names):
+def main(cascade, names, timeout):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     # Read the trained .yml file that was generated previously
     recognizer.read('trainer/trainer.yml')
@@ -23,7 +23,7 @@ def main(cascade, names):
     count = 0
     recognized = 0
     num_of_times = []
-    while count <= 100:
+    while count <= int(timeout):
         ret, img =cam.read()
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     
@@ -73,7 +73,7 @@ def main(cascade, names):
             break
         count = count + 1
     # Do a bit of cleanup
-    if count > 100:
+    if count > int(timeout):
         id = "unknown"
     print("\n [INFO] Exiting Program and cleanup stuff")
     cam.release()
