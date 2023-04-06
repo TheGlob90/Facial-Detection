@@ -4,6 +4,7 @@ def rx_and_echo(sock):
     sock.send("\nsend anything\n")
     while True:
         data = sock.recv(buf_size)
+        print(data)
         if data:
             return data
 
