@@ -42,9 +42,10 @@ def threads(thread_name, window, addr):
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
-        if ret == 1:
+        ret = ret.decode()
+        if ret == '1':
             window.write_event_value(thread_name, 'ALARM')
-        elif ret == 2:
+        elif ret == '2':
             break
     bc.disconnect(sock)
 
