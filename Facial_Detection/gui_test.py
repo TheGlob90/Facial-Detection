@@ -95,6 +95,7 @@ def keypad_f(code, timeout):
     keypad.close()
 
 def runSettings():
+    global settings_values
     #Settings Layout
     settings_layout = [
                     [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
@@ -143,10 +144,11 @@ def runSettings():
     settings.close()
 
 def main():
+    global settings_values
     names = settings_values['names']
 
-    # Returns the address for the ESP for connection
-    alldevices, sensor_addr = bc.scan_devices()
+    sensor_addr = settings_values['sensors']['address']
+    sensor_name = settings_values['sensors']['name']
 
     # Define the window layout for the intro screen.
     homescreen = [
@@ -156,9 +158,7 @@ def main():
     ]
 
     #Define the window layout for the settings
-    settings = [
-        [sg.Text('Enter the ID for the new face to be added.'), sg.InputText()],
-                                                                            
+    settings = [                                                            
         [sg.Text('Enter the name of the person being added.'), sg.InputText()],
 
         [sg.Button("New Face")], # Button to add a new face to be trained
@@ -177,7 +177,7 @@ def main():
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
     i = 0
     while i < len(sensor_addr):
-        threading.Thread(target=threads, args=('ALARM', window, sensor_addr[i],), daemon=True).start()
+        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
         i = i + 1
     window.Maximize()
 
@@ -187,11 +187,11 @@ def main():
 
         # TODO: Add in alarm if user fails to deactivate
         if(event == "ALARM"):
-            name = fr.main(cascPath, names, setting_values['face-timeout'])
+            name = fr.main(cascPath, names, settings_values['face-timeout'])
             if name == "unknown":
-                keypad_f(setting_values['code'], setting_values['code-timeout'])
+                keypad_f(settings_values['code'], settings_values['code-timeout'])
             else:
-                sg.Popup('Welcome back ' + name, keep_on_top = True)
+                sg.Popup('Welcome back ' + name + " Sensor " + event[1] + " went off", keep_on_top = True)
 
         # Exit event to close the GUI
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
@@ -201,17 +201,11 @@ def main():
         # New face button is pressed
         if event == "New Face":
             # For each person, enter one numeric face id
-            face_id = values[0]
-            user_name = values[1]
+            face_id = len(names) + 1
+            user_name = values[0]
             # Makes sure they have entered in both a name and ID for the user
-            if face_id == '' or user_name == '' or face_id.isnumeric() == False:
-                sg.Popup('Add a valid ID or name for the user', keep_on_top = True)
-                continue
-            # Makes sure the ID isn't already in use
-            # Goes based on the idea that Users will give increased IDs and not skip numbers
-            # Eg 1, 2, 3, etc 
-            if int(face_id) <= len(names) and not(names[int(face_id) - 1] == '\n'):
-                sg.Popup('ID already in use', keep_on_top = True)
+            if user_name == '':
+                sg.Popup('Add a valid name for the user', keep_on_top = True)
                 continue
             # Adds the new face to the settings file
             newFace(face_id, names, user_name)
@@ -220,13 +214,13 @@ def main():
             # Trains the ML model after taking the images
             ft.main(cascPath)
             # Creates a popup telling the user the face was trained
-            sg.Popup('Face added as ID #' + str(face_id) + " and name " + values[1], keep_on_top = True)
+            sg.Popup('Face added as ID #' + str(face_id) + " and name " + str(user_name), keep_on_top = True)
 
         # If the Facial Recognition button is clicked
         if event == "Facial Recognition":
-            name = fr.main(cascPath, names, setting_values['face-timeout'])
+            name = fr.main(cascPath, names, settings_values['face-timeout'])
             if name == "unknown":
-                keypad_f(setting_values['code'], setting_values['code-timeout'])
+                keypad_f(settings_values['code'], settings_values['code-timeout'])
             else:
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
 
@@ -235,7 +229,7 @@ def main():
             runSettings()
             # Reads in the code from the .json file
             with open('settings.json', 'r') as f:
-                setting_values = json.load(f)
+                settings_values = json.load(f)
 
     window.close()
 
