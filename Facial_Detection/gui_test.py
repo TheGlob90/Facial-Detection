@@ -19,39 +19,7 @@ sg.theme('SystemDefault')
 # Adds a new face to the facial recgonition
 def newFace(face_id, names):
     # Writes the new name to the text file to be loaded on startup
-            # Takes care of the name if it is the first ID
-            if int(face_id) == 1:
-                names_f = open("Names.txt", 'a')
-                names_f.seek(0,0)
-                names_f.write(user_name)
-                names_f.close()
-                names_f = open("Names.txt", 'r')
-                last_line = names_f.readlines()[-1]
-                names.append(last_line)
-                names_f.close()
-            # Adding an ID back on the end
-            elif int(face_id) > len(names):
-                names_f = open("Names.txt", 'a')
-                names_f.write('\n' + user_name)
-                names_f.close()
-                names_f = open("Names.txt", 'r')
-                last_line = names_f.readlines()[-1]
-                names.append(last_line)
-                names_f.close()
-            # If an ID gets removed and we want to overwite the now empty spot
-            elif names[int(face_id) - 1] == '\n':
-                file_contents = []
-                with open('Names.txt', 'r') as names_f:
-                    file_contents = names_f.readlines()
-                names_f.close()
-                user_name += '\n'
-                file_contents[int(face_id) - 1] = user_name
-                with open('Names.txt', 'w') as names_f:
-                    names_f.writelines(file_contents)
-                names_f.close()
-                # Data collection can't handle having the '\n' character so it must be removed
-                user_name = user_name.replace('\n', '')
-                names[int(face_id) - 1] = user_name
+    names.append(face_id)
 
 # Writing to sample.json
 def writeJSON(filename, data):
@@ -142,7 +110,6 @@ def runSettings():
         if event == sg.WIN_CLOSED or event == "Exit":  # if the X button clicked, just exit
             break
         if event == "Scan for Sensors":
-            # settings['DEVICES'].update(value='Scanning...')
             scanbt = bc.scan_devices()
             settings['DEVICES'].update((scanbt))
 
@@ -161,21 +128,14 @@ def runSettings():
     settings.close()
 
 def main():
-    names = []
-
-    # names related to ids: example ==> Brandon: id=1,  etc
-    # Used for matching a face to a name
-    names_f = open("Names.txt", 'r')
-    for line in names_f:
-        names.append(line)
-    names_f.close()
-
     # Reads in the code from the .json file
     with open('settings.json', 'r') as f:
         setting_values = json.load(f)
+    names = setting_values['names']
 
     # Returns the address for the ESP for connection
-    scanaddr = bc.scan_devices()
+    alldevices, sensor_addr = bc.scan_devices()
+    print(sensor_addr)
 
     # Define the window layout for the intro screen.
     homescreen = [
@@ -204,7 +164,7 @@ def main():
 
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
-    threading.Thread(target=threads, args=('ALARM', window, scanaddr,), daemon=True).start()
+    threading.Thread(target=threads, args=('ALARM', window, sensor_addr[0],), daemon=True).start()
     window.Maximize()
 
     keys_entered = ''
@@ -273,5 +233,6 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 if(os.path.isfile('./settings.json') == False):
         runSettings()
 main()
+
 
 print("ENDED")

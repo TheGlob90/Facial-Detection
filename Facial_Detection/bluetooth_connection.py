@@ -12,6 +12,7 @@ def scan_devices():
     print("Found {} devices.".format(len(nearby_devices)))
 
     ret = []
+    sensor_addr = []
     if(len(nearby_devices) == 0):
         ret += ["Found 0 Devices."]
     else:
@@ -19,8 +20,8 @@ def scan_devices():
             print("  {} - {}".format(addr, name))
             ret += ["Device: {} Address {}".format(name, addr)]
             if name == "ESP32test":
-                ret += addr
-    return ret
+                sensor_addr.append(addr)
+    return ret, sensor_addr
 
 def connect(addr):
     service_matches = find_service( address = addr )
