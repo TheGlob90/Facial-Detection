@@ -174,7 +174,7 @@ def main():
 
         # TODO: Add in alarm if user fails to deactivate
         if(event == "ALARM"):
-            name = fr.main(cascPath, names)
+            name = fr.main(cascPath, names, setting_values['face-timeout'])
             if name == "unknown":
                 keypad_f(setting_values['code'], setting_values['code-timeout'])
             else:
