@@ -14,28 +14,31 @@ import json
 # Sets the theme for the GUI
 sg.theme('SystemDefault')
 
-# addr = "54:43:B2:2B:A3:E2"
+settings_values = {
+                        "device-name": "",
+                        "code": "",
+                        "face-timeout": "", 
+                        "code-timeout": "",
+                        "sensors": "",
+                        "names": []
+            }
+
+sensors = {"name": [],
+            "address": []}
 
 # Adds a new face to the facial recgonition
-def newFace(face_id, names):
+def newFace(face_id, names, user_name):
     # Writes the new name to the text file to be loaded on startup
-    names.append(face_id)
+    names.append(user_name)
+    settings_values['names'] = names
+    settings_json = json.dumps(settings_values, indent=4)
+    writeJSON("settings.json", settings_json)
 
 # Writing to sample.json
 def writeJSON(filename, data):
   with open(str(filename), "w") as outfile:
       outfile.write(data)
   outfile.close()
-
-# Defines the layout for our keypad window
-keypad_layout = [
-            [sg.Input('', size=(10, 1), key='input')],
-            [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('4')],
-            [sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8')],
-            [sg.Button('9'), sg.Button('0'), sg.Button('⏎', key='Submit'), sg.Button('Clear')],
-            [sg.Text('', size=(15, 1), font=('Helvetica', 18),
-                     text_color='red', key='out')],
-        ]
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
@@ -53,6 +56,15 @@ def threads(thread_name, window, addr):
 
 # Runs the keypad once the alarm has been triggered
 def keypad_f(code, timeout):
+    # Defines the layout for our keypad window
+    keypad_layout = [
+            [sg.Input('', size=(10, 1), key='input')],
+            [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('4')],
+            [sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8')],
+            [sg.Button('9'), sg.Button('0'), sg.Button('⏎', key='Submit'), sg.Button('Clear')],
+            [sg.Text('', size=(15, 1), font=('Helvetica', 18),
+                     text_color='red', key='out')],
+        ]
     keypad = sg.Window('ALARM!!', keypad_layout,
                         default_button_element_size=(5, 2),
                         auto_size_buttons=False,
@@ -89,12 +101,12 @@ def runSettings():
                     [sg.Text("We need to run through some settings to get started.", size=(50, 1), justification="center")],
                     [sg.Text('General', size=(30,1), justification="left", font=("bold"))],
                     [sg.HSeparator()],
-                    [sg.Text('Please enter a name for this device.'), sg.Push(), sg.InputText(key='DEVICENAME', size=(25,1))],
+                    [sg.Text('Please enter a name for this device.'), sg.Push(), sg.InputText(default_text = settings_values['device-name'], key='DEVICENAME', size=(25,1))],
                     [sg.Text('Security', size=(30,1), justification="left", font=("bold"))],
                     [sg.HSeparator()],
-                    [sg.Text('Please enter a deactivation password.'), sg.Push(), sg.InputText(key='CODE', size=(25,1))],
-                    [sg.Text('Please enter the timeout time for facial detection. DEFAULT:100'), sg.Push(), sg.InputText(key='TIMEOUT_F', size=(25,1))],
-                    [sg.Text('Please enter the timeout time for passcode. DEFAULT:200'), sg.Push(), sg.InputText(key='TIMEOUT_P', size=(25,1))],
+                    [sg.Text('Please enter a deactivation password.'), sg.Push(), sg.InputText(default_text = settings_values['code'], key='CODE', size=(25,1))],
+                    [sg.Text('Please enter the timeout time for facial detection. DEFAULT:100'), sg.Push(), sg.InputText(default_text = settings_values['face-timeout'], key='TIMEOUT_F', size=(25,1))],
+                    [sg.Text('Please enter the timeout time for passcode. DEFAULT:200'), sg.Push(), sg.InputText(default_text = settings_values['code-timeout'], key='TIMEOUT_P', size=(25,1))],
                     [sg.Text('Connect', size=(30,1), justification="left", font=("bold"))],
                     [sg.HSeparator()],
                     [sg.Text("Let's add some sensors to the system!", size=(60,1), justification="left")],
@@ -111,32 +123,30 @@ def runSettings():
         if event == sg.WIN_CLOSED or event == "Exit":  # if the X button clicked, just exit
             break
         if event == "Scan for Sensors":
-            scanbt = bc.scan_devices()
+            scanbt, sensoraddr = bc.scan_devices()
             settings['DEVICES'].update((scanbt))
+            sensname = []
+            for x in range(len(sensoraddr)):
+                sensname.append(sg.popup_get_text("Add a name for the sensor " + sensoraddr[x]))
+            sensors['name'] = sensname
+            sensors['address'] = sensoraddr
 
         if event == "Save Settings":
-            settings_saved = {
-                        "device-name" : values['DEVICENAME'],
-                        "code" : values['CODE'],
-                        "face-timeout" : values['TIMEOUT_F'],
-                        "code-timeout" : values['TIMEOUT_P'],
-                        # "sensors" : sensors,
-                        # "names" : names
-            }
-            settings_json = json.dumps(settings_saved, indent=4)
+            settings_values['device-name'] = values['DEVICENAME']
+            settings_values['code'] = values['CODE']
+            settings_values['face-timeout'] = values['TIMEOUT_F']
+            settings_values['code-timeout'] = values['TIMEOUT_P']
+            settings_values['sensors'] = sensors
+            settings_json = json.dumps(settings_values, indent=4)
             writeJSON("settings.json", settings_json)
             break
     settings.close()
 
 def main():
-    # Reads in the code from the .json file
-    with open('settings.json', 'r') as f:
-        setting_values = json.load(f)
-    names = setting_values['names']
+    names = settings_values['names']
 
     # Returns the address for the ESP for connection
     alldevices, sensor_addr = bc.scan_devices()
-    print(sensor_addr)
 
     # Define the window layout for the intro screen.
     homescreen = [
@@ -165,7 +175,10 @@ def main():
 
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
-    threading.Thread(target=threads, args=('ALARM', window, sensor_addr[0],), daemon=True).start()
+    i = 0
+    while i < len(sensor_addr):
+        threading.Thread(target=threads, args=('ALARM', window, sensor_addr[i],), daemon=True).start()
+        i = i + 1
     window.Maximize()
 
     keys_entered = ''
@@ -201,7 +214,7 @@ def main():
                 sg.Popup('ID already in use', keep_on_top = True)
                 continue
             # Adds the new face to the settings file
-            newFace(face_id, names)
+            newFace(face_id, names, user_name)
             # Calls the data collection function
             dc.main(face_id, user_name, cascPath)
             # Trains the ML model after taking the images
@@ -233,6 +246,10 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 # If settings file doesn't exist we need to generate it
 if(os.path.isfile('./settings.json') == False):
         runSettings()
+
+with open('settings.json', 'r') as f:
+    settings_values = json.load(f)
+
 main()
 
 
