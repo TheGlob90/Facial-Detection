@@ -24,7 +24,7 @@ def scan_devices():
                 sensor_addr.append(addr)
     return ret, sensor_addr
 
-def connect(addr):
+def connect(addr, port):
     service_matches = find_service( address = addr )
     if len(service_matches) == 0:
         print("Couldn't connect =(")
@@ -39,7 +39,6 @@ def connect(addr):
     name = first_match["name"]
     host = first_match["host"]
 
-    port=1
     print("connecting to \"%s\" on %s, port %s" % (name, host, port))
 
     # Create the client socket

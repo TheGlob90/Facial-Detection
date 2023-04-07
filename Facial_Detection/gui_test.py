@@ -41,10 +41,10 @@ def writeJSON(filename, data):
   outfile.close()
 
 # Function each sensor needs to run on for bluetooth connection
-def threads(thread_name, window, addr):
+def threads(thread_name, window, addr, num):
     sock = bc.connect(addr)
     while True:
-        ret = bc.rx_and_echo(sock)
+        ret = bc.rx_and_echo(sock, num)
         ret = ret.decode()
         if ret == '1':
             window.write_event_value(thread_name, 'ALARM')
@@ -177,7 +177,7 @@ def main():
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
     i = 0
     while i < len(sensor_addr):
-        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
+        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i], i,), daemon=True).start()
         i = i + 1
     window.Maximize()
 
