@@ -24,7 +24,7 @@ def scan_devices():
                 sensor_addr.append(addr)
     return ret, sensor_addr
 
-def connect(addr, port):
+def connect(addr):
     service_matches = find_service( address = addr )
     if len(service_matches) == 0:
         print("Couldn't connect =(")
