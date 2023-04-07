@@ -177,7 +177,7 @@ def main():
     window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
     i = 0
     while i < len(sensor_addr):
-        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i], i,), daemon=True).start()
+        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i], i + 1,), daemon=True).start()
         i = i + 1
     window.Maximize()
 
