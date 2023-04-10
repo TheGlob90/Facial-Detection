@@ -192,7 +192,7 @@ def main():
             if name == "unknown":
                 keypad_f(settings_values['code'], settings_values['code-timeout'])
             else:
-                sg.Popup('Welcome back ' + name + " Sensor " + values + " went off", keep_on_top = True)
+                sg.Popup('Welcome back ' + name + " Sensor " + values["ALARM"] + " went off", keep_on_top = True)
 
         # Exit event to close the GUI
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
