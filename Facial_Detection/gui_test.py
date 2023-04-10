@@ -47,8 +47,7 @@ def threads(thread_name, window, addr):
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
         if ret == '1':
-            print('Made it!!\n')
-            window.write_event_value(thread_name, 'ALARM')
+            window.write_event_value('ALARM', thread_name)
         elif ret == '2':
             break
     bc.disconnect(sock)
@@ -166,7 +165,7 @@ def main():
                 
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
 
-        [sg.Button("Change settings")], # Button used to change code
+        [sg.Button("Change settings")], # Button used to change settings
         
         [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
 
