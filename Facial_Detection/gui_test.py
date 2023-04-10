@@ -46,6 +46,7 @@ def threads(thread_name, window, addr):
     while True:
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
+        print("Decoded: " + ret + '\n')
         if ret == '1':
             window.write_event_value(thread_name, 'ALARM')
         elif ret == '2':
