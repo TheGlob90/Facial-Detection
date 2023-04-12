@@ -96,6 +96,7 @@ def keypad_f(code, timeout):
 
 def runSettings():
     global settings_values
+    settings_saved = False
     #Settings Layout
     settings_layout = [
                     [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
@@ -140,9 +141,11 @@ def runSettings():
             settings_values['sensors'] = sensors
             settings_json = json.dumps(settings_values, indent=4)
             writeJSON("settings.json", settings_json)
+            settings_saved = True
             break
     settings.close()
-    os.execv(sys.argv[0], sys.argv)
+    if(settings_saved == True):
+        os.execv(sys.executable, ['python3'] + sys.argv)
 
 def main():
     global settings_values
