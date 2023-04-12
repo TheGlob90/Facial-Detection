@@ -142,6 +142,7 @@ def runSettings():
             writeJSON("settings.json", settings_json)
             break
     settings.close()
+    os.execv(sys.argv[0], sys.argv)
 
 def main():
     global settings_values
