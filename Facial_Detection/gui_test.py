@@ -15,6 +15,7 @@ import json
 sg.theme('Dark Teal 6')
 header=("bold", 25)
 default=('Any', 15)
+default_set=('Any', 8)
 
 
 settings_values = {
@@ -108,7 +109,7 @@ def runSettings():
                              font=header)],
                     [sg.Text("We need to run through some settings to get started.", 
                              size=(50, 1), 
-                             font=default, 
+                             font=default_set, 
                              justification="center")],
                     [sg.Text('General', 
                              size=(30,1), 
@@ -116,7 +117,7 @@ def runSettings():
                              font=header)],
                     [sg.HSeparator(pad=(500, 1))],
                     [sg.Push(), sg.Text('Please enter a name for this device.', 
-                             font=default), sg.Push(),
+                             font=default_set), sg.Push(),
                      sg.InputText(default_text = settings_values['device-name'], 
                                   key='DEVICENAME', 
                                   size=(25,1)), sg.Push()],
@@ -126,17 +127,17 @@ def runSettings():
                              font=header)],
                     [sg.HSeparator(pad=(500, 1))],
                     [sg.Push(), sg.Text('Please enter a deactivation password.', 
-                             font=default), sg.Push(),
+                             font=default_set), sg.Push(),
                      sg.InputText(default_text = settings_values['code'], 
                                   key='CODE', 
                                   size=(25,1)), sg.Push()],
                     [sg.Push(), sg.Text('Please enter the timeout time for facial detection. DEFAULT:100', 
-                             font=default), sg.Push(),
+                             font=default_set), sg.Push(),
                      sg.InputText(default_text = settings_values['face-timeout'], 
                                   key='TIMEOUT_F', 
                                   size=(25,1)), sg.Push()],
                     [sg.Push(), sg.Text('Please enter the timeout time for passcode. DEFAULT:200',
-                             font=default), sg.Push(),
+                             font=default_set), sg.Push(),
                      sg.InputText(default_text = settings_values['code-timeout'], 
                                   key='TIMEOUT_P', 
                                   size=(25,1)), sg.Push()],
@@ -148,7 +149,7 @@ def runSettings():
                     [sg.Text("Let's add some sensors to the system!", 
                              size=(60,1), 
                              justification="left",
-                             font=default)],
+                             font=default_set)],
                     [sg.Button("Scan for Sensors",
                                font=default)],
                     [sg.Listbox("", 
