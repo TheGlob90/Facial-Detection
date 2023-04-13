@@ -12,7 +12,10 @@ import time
 import json
 
 # Sets the theme for the GUI
-sg.theme('SystemDefault')
+sg.theme('Dark Teal 6')
+header=("bold", 30)
+default=('Any', 20)
+
 
 settings_values = {
                         "device-name": "",
@@ -24,7 +27,7 @@ settings_values = {
             }
 
 sensors = {"name": [],
-            "address": []}
+           "address": []}
 
 # Adds a new face to the facial recgonition
 def newFace(face_id, names, user_name):
@@ -99,30 +102,69 @@ def runSettings():
     settings_saved = False
     #Settings Layout
     settings_layout = [
-                    [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
-                    [sg.Text("We need to run through some settings to get started.", size=(50, 1), justification="center")],
-                    [sg.Text('General', size=(30,1), justification="left", font=("bold"))],
-                    [sg.HSeparator()],
-                    [sg.Text('Please enter a name for this device.'), sg.Push(), sg.InputText(default_text = settings_values['device-name'], key='DEVICENAME', size=(25,1))],
-                    [sg.Text('Security', size=(30,1), justification="left", font=("bold"))],
-                    [sg.HSeparator()],
-                    [sg.Text('Please enter a deactivation password.'), sg.Push(), sg.InputText(default_text = settings_values['code'], key='CODE', size=(25,1))],
-                    [sg.Text('Please enter the timeout time for facial detection. DEFAULT:100'), sg.Push(), sg.InputText(default_text = settings_values['face-timeout'], key='TIMEOUT_F', size=(25,1))],
-                    [sg.Text('Please enter the timeout time for passcode. DEFAULT:200'), sg.Push(), sg.InputText(default_text = settings_values['code-timeout'], key='TIMEOUT_P', size=(25,1))],
-                    [sg.Text('Connect', size=(30,1), justification="left", font=("bold"))],
-                    [sg.HSeparator()],
-                    [sg.Text("Let's add some sensors to the system!", size=(60,1), justification="left")],
-                    [sg.Button("Scan for Sensors")],
-                    [sg.Listbox("", size=(80,5), key='DEVICES')],
-                    [sg.Button("Save Settings"), sg.Button("Exit", size=(10, 1))],                
+                    [sg.Text("Settings", 
+                             size=(60, 1), 
+                             justification="center",
+                             font=header)],
+                    [sg.Text("We need to run through some settings to get started.", 
+                             size=(50, 1), 
+                             font=default, 
+                             justification="center")],
+                    [sg.Text('General', 
+                             size=(30,1), 
+                             justification="left", 
+                             font=header)],
+                    [sg.HSeparator(pad=(500, 1))],
+                    [sg.Push(), sg.Text('Please enter a name for this device.', 
+                             font=default), sg.Push(),
+                     sg.InputText(default_text = settings_values['device-name'], 
+                                  key='DEVICENAME', 
+                                  size=(25,1)), sg.Push()],
+                    [sg.Text('Security', 
+                             size=(30,1),
+                             justification="left", 
+                             font=header)],
+                    [sg.HSeparator(pad=(500, 1))],
+                    [sg.Push(), sg.Text('Please enter a deactivation password.', 
+                             font=default), sg.Push(),
+                     sg.InputText(default_text = settings_values['code'], 
+                                  key='CODE', 
+                                  size=(25,1)), sg.Push()],
+                    [sg.Push(), sg.Text('Please enter the timeout time for facial detection. DEFAULT:100', 
+                             font=default), sg.Push(),
+                     sg.InputText(default_text = settings_values['face-timeout'], 
+                                  key='TIMEOUT_F', 
+                                  size=(25,1)), sg.Push()],
+                    [sg.Push(), sg.Text('Please enter the timeout time for passcode. DEFAULT:200',
+                             font=default), sg.Push(),
+                     sg.InputText(default_text = settings_values['code-timeout'], 
+                                  key='TIMEOUT_P', 
+                                  size=(25,1)), sg.Push()],
+                    [sg.Text('Connect', 
+                             size=(30,1), 
+                             justification="left", 
+                             font=header)],
+                    [sg.HSeparator(pad=(500, 1))],
+                    [sg.Text("Let's add some sensors to the system!", 
+                             size=(60,1), 
+                             justification="left",
+                             font=default)],
+                    [sg.Button("Scan for Sensors",
+                               font=default)],
+                    [sg.Listbox("", 
+                                size=(80,5), 
+                                key='DEVICES')],
+                    [sg.Button("Save Settings"), 
+                     sg.Button("EXIT", 
+                               size=(10, 1))],                
     ]
 
-    settings = sg.Window("(AI)-larm STARTUP", settings_layout, resizable=True, finalize=True)
+    settings = sg.Window("(AI)-larm STARTUP", settings_layout, resizable=True, finalize=True, element_justification='c')
     settings.maximize()
 
     while True:
         event, values = settings.read()  # read the form
-        if event == sg.WIN_CLOSED or event == "Exit":  # if the X button clicked, just exit
+        if event == sg.WIN_CLOSED or event == "EXIT":  # if the X button clicked, just exit
             break
         if event == "Scan for Sensors":
             scanbt, sensoraddr = bc.scan_devices()
@@ -150,44 +192,76 @@ def runSettings():
 def main():
     global settings_values
     names = settings_values['names']
+    devicename = settings_values['device-name']
 
     sensor_addr = settings_values['sensors']['address']
     sensor_name = settings_values['sensors']['name']
 
+    status = "DISARMED"
+
     # Define the window layout for the intro screen.
     homescreen = [
-        [sg.Text("Welcome to (AI)-larm", size=(60, 1), justification="center")],
-        [sg.Button("Exit", size=(10, 1))],
-
-    ]
-
-    #Define the window layout for the settings
-    settings = [                                                            
-        [sg.Text('Enter the name of the person being added.'), sg.InputText()],
-
+        [sg.Text("Welcome to (AI)-larm", 
+                 justification="center", 
+                 font=("bold", 60))],
+        [sg.HSeparator(pad=(500,1))],
+        [sg.Text("Device: ", 
+                 font=default, 
+                 justification="center"),
+         sg.Text(devicename, 
+                 font=default,
+                 background_color="teal")],
+        [sg.Text("Today is: ", 
+                 font=default,
+                 justification='c'),
+         sg.Text('', 
+                 font=default,
+                 key='DATE',
+                 background_color="teal")],
+        [sg.Text("The current time is: ", 
+                 font=default,
+                 justification='c'),
+         sg.Text('', 
+                 font=default,
+                 key='TIME',
+                 background_color="teal")],
+        [sg.VPush()],
+        [sg.Text("System Status", 
+                 font=default,
+                 justification='c')],
+        [sg.HSeparator(pad=(500,1))],
+        [sg.Text("The system is currently ", 
+                 font=default,
+                 justification='c'),
+         sg.Text(status, 
+                 font=default,
+                 key='STATUS',
+                 background_color="green")],
+        [sg.VPush()],
+        [sg.Text("Options", 
+                 font=header)],
+        [sg.HSeparator(pad=(500,1))],
+        [sg.Text('Enter the name of the person being added.'), 
+         sg.InputText(key='USER')],
         [sg.Button("New Face")], # Button to add a new face to be trained
-                
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
-
         [sg.Button("Change settings")], # Button used to change settings
-        
-        [sg.Button("EXIT")]] # Button to Exit the GUI from other screen
-
-    # Creates the tabs in the GUI so you can select a different one
-    tabgrp = [[sg.TabGroup([[sg.Tab('Welcome', homescreen, title_color='Black', border_width=10,tooltip='Camera', element_justification='center'),
-                sg.Tab('Settings', settings, title_color='Black')]])]]
+        [sg.Button("EXIT")] # Button to Exit the GUI from other screen
+    ]                                                                
 
     # Create the window and show it without the plot
-    window = sg.Window("Facial Recognition", tabgrp, resizable=True, finalize=True)
+    window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
     i = 0
     while i < len(sensor_addr):
         threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
         i = i + 1
     window.Maximize()
+    window['DATE'].update(time.strftime('%B:%d:%Y'))
+    window['TIME'].update(time.strftime('%H:%M:%S'))
 
     keys_entered = ''
     while True:
-        event, values = window.read()
+        event, values = window.read(timeout=10)
 
         # TODO: Add in alarm if user fails to deactivate
         if(event == "ALARM"):
@@ -206,7 +280,7 @@ def main():
         if event == "New Face":
             # For each person, enter one numeric face id
             face_id = len(names) + 1
-            user_name = values[0]
+            user_name = values['USER']
             # Makes sure they have entered in both a name and ID for the user
             if user_name == '':
                 sg.Popup('Add a valid name for the user', keep_on_top = True)
@@ -235,6 +309,8 @@ def main():
             with open('settings.json', 'r') as f:
                 settings_values = json.load(f)
 
+        window['DATE'].update(time.strftime('%B %d, %Y'))
+        window['TIME'].update(time.strftime('%H:%M:%S'))
     window.close()
 
 # Reads in the cascade file to be used
