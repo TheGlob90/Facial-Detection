@@ -199,6 +199,14 @@ def main():
     sensor_name = settings_values['sensors']['name']
 
     status = "DISARMED"
+    sensor_list = ""
+
+    if(len(sensor_name) == 0):
+        sensor_list = "No sensors added."
+    else:
+        for s in range(len(sensor_name)):
+            sensor_list += sensor_name[s] + "\n"
+    print(sensor_list)
 
     # Define the window layout for the intro screen.
     homescreen = [
@@ -238,13 +246,18 @@ def main():
                  font=default,
                  key='STATUS',
                  background_color="green")],
+        [sg.Text("Your sensors: \n" + sensor_list, 
+                 font=default,
+                 justification='c')],
+        [sg.Button("ARM SYSTEM", font=header)],
         [sg.VPush()],
         [sg.Text("Options", 
                  font=header)],
         [sg.HSeparator(pad=(500,1))],
-        [sg.Text('Enter the name of the person being added.'), 
-         sg.InputText(key='USER')],
-        [sg.Button("New Face")], # Button to add a new face to be trained
+        [sg.Text('Name: ',
+                 font=default), 
+         sg.InputText(key='USER'), 
+         sg.Button("Add New Face")], # Button to add a new face to be trained
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
         [sg.Button("Change settings")], # Button used to change settings
         [sg.Button("EXIT")] # Button to Exit the GUI from other screen
@@ -260,17 +273,24 @@ def main():
     window['DATE'].update(time.strftime('%B:%d:%Y'))
     window['TIME'].update(time.strftime('%H:%M:%S'))
 
-    keys_entered = ''
     while True:
         event, values = window.read(timeout=10)
 
         # TODO: Add in alarm if user fails to deactivate
-        if(event == "ALARM"):
+
+        if(event == "ARM SYSTEM"):
+            status = "ARMED"
+            window['STATUS'].update(status, background_color="red")
+
+        if(event == "ALARM" and status == "ARMED"):
             name = fr.main(cascPath, names, settings_values['face-timeout'])
             if name == "unknown":
                 keypad_f(settings_values['code'], settings_values['code-timeout'])
             else:
                 sg.Popup('Welcome back ' + name + " Sensor " + values["ALARM"] + " went off", keep_on_top = True)
+                status = "DISARMED"
+                window['STATUS'].update(status, background_color="green")
+
 
         # Exit event to close the GUI
         if event == "Exit" or event == sg.WIN_CLOSED or event == "EXIT":
