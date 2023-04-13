@@ -13,8 +13,8 @@ import json
 
 # Sets the theme for the GUI
 sg.theme('Dark Teal 6')
-header=("bold", 30)
-default=('Any', 20)
+header=("bold", 25)
+default=('Any', 15)
 
 
 settings_values = {
@@ -201,9 +201,9 @@ def main():
 
     # Define the window layout for the intro screen.
     homescreen = [
-        [sg.Text("Welcome to (AI)-larm", 
+        [sg.Text("Welcome to \n(AI)-larm", 
                  justification="center", 
-                 font=("bold", 60))],
+                 font=("bold", 50))],
         [sg.HSeparator(pad=(500,1))],
         [sg.Text("Device: ", 
                  font=default, 
@@ -227,7 +227,7 @@ def main():
                  background_color="teal")],
         [sg.VPush()],
         [sg.Text("System Status", 
-                 font=default,
+                 font=header,
                  justification='c')],
         [sg.HSeparator(pad=(500,1))],
         [sg.Text("The system is currently ", 
