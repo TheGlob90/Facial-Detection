@@ -268,8 +268,10 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
     i = 0
+    threads = []
     while i < len(sensor_addr):
-        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
+        t = threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
+        threads.append(t)
         i = i + 1
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
@@ -342,6 +344,8 @@ def main():
         window['DATE'].update(time.strftime('%B %d, %Y'))
         window['TIME'].update(time.strftime('%H:%M:%S'))
     window.close()
+    for x in threads:
+        x.join()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
@@ -359,6 +363,5 @@ with open('settings.json', 'r') as f:
 main()
 
 exit_event.set()
-threading.main_thread().join()
 
 print("ENDED")
