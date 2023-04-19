@@ -351,9 +351,9 @@ def main():
         window['DATE'].update(time.strftime('%B %d, %Y'))
         window['TIME'].update(time.strftime('%H:%M:%S'))
     window.close()
-    exit_event.set()
-    for x in threads:
-        x.join()
+    # exit_event.set()
+    # for x in threads:
+    #     x.join()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
