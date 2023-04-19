@@ -47,7 +47,6 @@ def writeJSON(filename, data):
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
-    print("MADE it")
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
@@ -269,10 +268,10 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
     i = 0
-    threads = []
     while i < len(sensor_addr):
         threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
         i = i + 1
+        print(i)
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
     window['TIME'].update(time.strftime('%H:%M:%S'))
