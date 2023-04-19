@@ -53,8 +53,8 @@ def threads(thread_name, window, addr):
         ret = ret.decode()
         if ret == '1':
             window.write_event_value('ALARM', thread_name)
-        elif exit_event.is_set():
-            break
+        # elif exit_event.is_set():
+        #     break
     bc.disconnect(sock)
 
     print("Thread done \n")
@@ -209,7 +209,6 @@ def main():
     else:
         for s in range(len(sensor_name)):
             sensor_list += sensor_name[s] + "\n"
-    print(sensor_list)
 
     # Define the window layout for the intro screen.
     homescreen = [
