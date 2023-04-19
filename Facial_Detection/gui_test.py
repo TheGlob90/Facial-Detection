@@ -103,6 +103,7 @@ def keypad_f(code, timeout):
 
 def runSettings():
     global settings_values
+    global exit_event
     settings_saved = False
     #Settings Layout
     settings_layout = [
@@ -269,8 +270,11 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
     i = 0
+    threads = []
     while i < len(sensor_addr):
-        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
+        # , daemon=True
+        t = threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],)).start()
+        threads.append(t)
         i = i + 1
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
@@ -355,6 +359,9 @@ def main():
 
         window['DATE'].update(time.strftime('%B %d, %Y'))
         window['TIME'].update(time.strftime('%H:%M:%S'))
+    exit_event.set()
+    for x in threads:
+        x.join()
     window.close()
 
 # Reads in the cascade file to be used
