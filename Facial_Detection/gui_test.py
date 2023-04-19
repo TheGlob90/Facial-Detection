@@ -47,6 +47,7 @@ def writeJSON(filename, data):
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
+    global exit_event
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
@@ -194,6 +195,7 @@ def runSettings():
 
 def main():
     global settings_values
+    global exit_event
     names = settings_values['names']
     devicename = settings_values['device-name']
 
@@ -294,7 +296,11 @@ def main():
             if (name == "unknown"):
                 count = keypad_f(settings_values['code'], settings_values['code-timeout'])
                 if count >= int(settings_values['code-timeout']):
-                    sp.speaker()
+                    speaker_event = threading.Event()
+                    speaker_thread = threading.Thread(target=sp.speaker, args=(speaker_event,))
+                    while count >= int(settings_values['code-timeout']):
+                        count = keypad_f(settings_values['code'], settings_values['code-timeout'])
+                    speaker_event.set()
                 else:
                     sg.Popup("Welcome back! Sensor " + values["ALARM"] + " went off", keep_on_top = True)
                     status = "DISARMED"
@@ -345,6 +351,7 @@ def main():
         window['DATE'].update(time.strftime('%B %d, %Y'))
         window['TIME'].update(time.strftime('%H:%M:%S'))
     window.close()
+    exit_event.set()
     for x in threads:
         x.join()
 
@@ -362,7 +369,5 @@ with open('settings.json', 'r') as f:
     settings_values = json.load(f)
 
 main()
-
-exit_event.set()
 
 print("ENDED")
