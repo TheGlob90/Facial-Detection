@@ -273,7 +273,8 @@ def main():
     threads = []
     while i < len(sensor_addr):
         # , daemon=True
-        t = threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],)).start()
+        t = threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],))
+        t.start()
         threads.append(t)
         i = i + 1
     window.Maximize()
