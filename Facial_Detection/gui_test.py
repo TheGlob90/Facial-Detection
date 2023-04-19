@@ -47,6 +47,7 @@ def writeJSON(filename, data):
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
+    global exit_event
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
@@ -271,7 +272,6 @@ def main():
     while i < len(sensor_addr):
         threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
         i = i + 1
-        print(i)
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
     window['TIME'].update(time.strftime('%H:%M:%S'))
@@ -352,6 +352,8 @@ def main():
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
+
+exit_event = threading.Event()
 
 # If settings file doesn't exist we need to generate it
 if(os.path.isfile('./settings.json') == False):
