@@ -10,8 +10,7 @@ import threading
 import bluetooth_connection as bc
 import time
 import json
-import pwmio
-import board
+import speaker as sp
 
 # Sets the theme for the GUI
 sg.theme('Dark Teal 6')
@@ -99,6 +98,7 @@ def keypad_f(code, timeout):
                 # change the form to reflect current key string
             keypad['input'].update(keys_entered)
     keypad.close()
+    return count
 
 def runSettings():
     global settings_values
@@ -280,14 +280,21 @@ def main():
 
         # TODO: Add in alarm if user fails to deactivate
 
+        # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
             status = "ARMED"
             window['STATUS'].update(status, background_color="red")
 
+        # If the alarm is triggered and the system is armed go off
         if(event == "ALARM" and status == "ARMED"):
             name = fr.main(cascPath, names, settings_values['face-timeout'])
-            if name == "unknown":
-                keypad_f(settings_values['code'], settings_values['code-timeout'])
+            if (name == "unknown"):
+                count = keypad_f(settings_values['code'], settings_values['code-timeout'])
+                if count == settings_values['code-timeout']:
+                    sp.speaker()
+                else:
+                    sg.Popup("Welcome back! Sensor " + values["ALARM"] + " went off", keep_on_top = True)
+                    status = "DISARMED"
             else:
                 sg.Popup('Welcome back ' + name + " Sensor " + values["ALARM"] + " went off", keep_on_top = True)
                 status = "DISARMED"
