@@ -49,6 +49,7 @@ def writeJSON(filename, data):
 def threads(thread_name, window, addr):
     global exit_event
     sock = bc.connect(addr)
+    print("Made it\n")
     while True:
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
@@ -276,7 +277,6 @@ def main():
         t.start()
         threads.append(t)
         i = i + 1
-        print("Made it\n")
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
     window['TIME'].update(time.strftime('%H:%M:%S'))
