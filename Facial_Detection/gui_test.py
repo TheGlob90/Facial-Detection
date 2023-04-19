@@ -299,6 +299,7 @@ def main():
                         count = keypad_f(settings_values['code'], settings_values['code-timeout'])
                     speaker_event.set()
                     speaker_thread.join()
+                    status = "DISARMED"
                 else:
                     sg.Popup("Welcome back! Sensor " + values["ALARM"] + " went off", keep_on_top = True)
                     status = "DISARMED"
