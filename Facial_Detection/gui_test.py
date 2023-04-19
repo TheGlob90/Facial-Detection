@@ -103,7 +103,6 @@ def keypad_f(code, timeout):
 
 def runSettings():
     global settings_values
-    global exit_event
     settings_saved = False
     #Settings Layout
     settings_layout = [
@@ -277,6 +276,7 @@ def main():
         t.start()
         threads.append(t)
         i = i + 1
+        print("Made it\n")
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
     window['TIME'].update(time.strftime('%H:%M:%S'))
