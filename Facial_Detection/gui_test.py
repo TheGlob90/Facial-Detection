@@ -290,7 +290,7 @@ def main():
             name = fr.main(cascPath, names, settings_values['face-timeout'])
             if (name == "unknown"):
                 count = keypad_f(settings_values['code'], settings_values['code-timeout'])
-                if count == settings_values['code-timeout']:
+                if count >= settings_values['code-timeout']:
                     sp.speaker()
                 else:
                     sg.Popup("Welcome back! Sensor " + values["ALARM"] + " went off", keep_on_top = True)
