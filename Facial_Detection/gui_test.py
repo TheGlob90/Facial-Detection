@@ -294,6 +294,7 @@ def main():
                 if count >= int(settings_values['code-timeout']):
                     speaker_event = threading.Event()
                     speaker_thread = threading.Thread(target=sp.speaker, args=(speaker_event,))
+                    speaker_thread.start()
                     while count >= int(settings_values['code-timeout']):
                         count = keypad_f(settings_values['code'], settings_values['code-timeout'])
                     speaker_event.set()
