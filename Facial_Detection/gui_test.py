@@ -53,7 +53,7 @@ def threads(thread_name, window, addr):
         ret = ret.decode()
         if ret == '1':
             window.write_event_value('ALARM', thread_name)
-        elif ret == '2':
+        elif exit_event.is_set():
             break
     bc.disconnect(sock)
 
@@ -347,6 +347,8 @@ def main():
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
 
+exit_event = threading.Event()
+
 # If settings file doesn't exist we need to generate it
 if(os.path.isfile('./settings.json') == False):
         runSettings()
@@ -356,5 +358,6 @@ with open('settings.json', 'r') as f:
 
 main()
 
+exit_event.set()
 
 print("ENDED")
