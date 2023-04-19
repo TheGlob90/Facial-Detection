@@ -288,15 +288,21 @@ def main():
 
         # If the alarm is triggered and the system is armed go off
         if(event == "ALARM" and status == "ARMED"):
+            # Run facial rec
             name = fr.main(cascPath, names, settings_values['face-timeout'])
             if (name == "unknown"):
+                # Run code popping up since facial rec failed
                 count = keypad_f(settings_values['code'], settings_values['code-timeout'])
+                # If user fails to enter in code in allotted time
                 if count >= int(settings_values['code-timeout']):
+                    # Create speaker event that runs speaker code
                     speaker_event = threading.Event()
                     speaker_thread = threading.Thread(target=sp.speaker, args=(speaker_event,))
                     speaker_thread.start()
+                    # Rerun the keypad while the speaker is blaring
                     while count >= int(settings_values['code-timeout']):
                         count = keypad_f(settings_values['code'], settings_values['code-timeout'])
+                    # Successful code input, kill speaker
                     speaker_event.set()
                     speaker_thread.join()
                     status = "DISARMED"
