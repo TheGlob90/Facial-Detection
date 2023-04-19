@@ -10,6 +10,7 @@ import threading
 import bluetooth_connection as bc
 import json
 import speaker as sp
+import time
 
 # Sets the theme for the GUI
 sg.theme('Dark Teal 6')
