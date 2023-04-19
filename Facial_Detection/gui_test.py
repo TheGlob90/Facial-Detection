@@ -47,7 +47,6 @@ def writeJSON(filename, data):
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
-    global exit_event
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
