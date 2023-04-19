@@ -10,6 +10,8 @@ import threading
 import bluetooth_connection as bc
 import time
 import json
+import pwmio
+import board
 
 # Sets the theme for the GUI
 sg.theme('Dark Teal 6')
@@ -213,7 +215,7 @@ def main():
         [sg.Text("Welcome to \n(AI)-larm", 
                  justification="center", 
                  font=("bold", 50))],
-        [sg.HSeparator(pad=(500,1))],
+        [sg.HSeparator(pad=(450,1))],
         [sg.Text("Device: ", 
                  font=default, 
                  justification="center"),
@@ -238,7 +240,7 @@ def main():
         [sg.Text("System Status", 
                  font=header,
                  justification='c')],
-        [sg.HSeparator(pad=(500,1))],
+        [sg.HSeparator(pad=(450,1))],
         [sg.Text("The system is currently ", 
                  font=default,
                  justification='c'),
@@ -253,7 +255,7 @@ def main():
         [sg.VPush()],
         [sg.Text("Options", 
                  font=header)],
-        [sg.HSeparator(pad=(500,1))],
+        [sg.HSeparator(pad=(450,1))],
         [sg.Text('Name: ',
                  font=default), 
          sg.InputText(key='USER'), 
