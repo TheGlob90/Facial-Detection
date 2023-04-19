@@ -270,8 +270,7 @@ def main():
     i = 0
     threads = []
     while i < len(sensor_addr):
-        t = threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
-        threads.append(t)
+        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
         i = i + 1
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
@@ -349,15 +348,10 @@ def main():
         window['DATE'].update(time.strftime('%B %d, %Y'))
         window['TIME'].update(time.strftime('%H:%M:%S'))
     window.close()
-    # exit_event.set()
-    # for x in threads:
-    #     x.join()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
-
-exit_event = threading.Event()
 
 # If settings file doesn't exist we need to generate it
 if(os.path.isfile('./settings.json') == False):
