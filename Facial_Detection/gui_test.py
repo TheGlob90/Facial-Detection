@@ -47,14 +47,15 @@ def writeJSON(filename, data):
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
+    print("MADE it")
     sock = bc.connect(addr)
     while True:
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
         if ret == '1':
             window.write_event_value('ALARM', thread_name)
-        # elif exit_event.is_set():
-        #     break
+        elif exit_event.is_set():
+            break
     bc.disconnect(sock)
 
     print("Thread done \n")
