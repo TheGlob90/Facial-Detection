@@ -359,5 +359,6 @@ with open('settings.json', 'r') as f:
 main()
 
 exit_event.set()
+threading.main_thread().join()
 
 print("ENDED")
