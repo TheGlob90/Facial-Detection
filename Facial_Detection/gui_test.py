@@ -8,7 +8,6 @@ import face_rec as fr
 import data_collection as dc
 import threading
 import bluetooth_connection as bc
-import time
 import json
 import speaker as sp
 

@@ -1,5 +1,6 @@
 import pwmio
 import board
+import time
 
 def speaker(): 
     pwm = pwmio.PWMOut(board.D12, duty_cycle=2 ** 15, frequency=880)
