@@ -47,16 +47,12 @@ def writeJSON(filename, data):
 
 # Function each sensor needs to run on for bluetooth connection
 def threads(thread_name, window, addr):
-    global exit_event
     sock = bc.connect(addr)
-    print("Made it\n")
     while True:
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
         if ret == '1':
             window.write_event_value('ALARM', thread_name)
-        elif exit_event.is_set():
-            break
     bc.disconnect(sock)
 
     print("Thread done \n")
@@ -196,7 +192,6 @@ def runSettings():
 
 def main():
     global settings_values
-    global exit_event
     names = settings_values['names']
     devicename = settings_values['device-name']
 
@@ -270,12 +265,8 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
     i = 0
-    threads = []
     while i < len(sensor_addr):
-        # , daemon=True
-        t = threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],))
-        t.start()
-        threads.append(t)
+        threading.Thread(target=threads, args=(sensor_name[i], window, sensor_addr[i],), daemon=True).start()
         i = i + 1
     window.Maximize()
     window['DATE'].update(time.strftime('%B:%d:%Y'))
@@ -283,8 +274,6 @@ def main():
 
     while True:
         event, values = window.read(timeout=10)
-
-        # TODO: Add in alarm if user fails to deactivate
 
         # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
@@ -360,16 +349,11 @@ def main():
 
         window['DATE'].update(time.strftime('%B %d, %Y'))
         window['TIME'].update(time.strftime('%H:%M:%S'))
-    exit_event.set()
-    for x in threads:
-        x.join()
     window.close()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
 faceCascade = cv2.CascadeClassifier(cascPath)
-
-exit_event = threading.Event()
 
 # If settings file doesn't exist we need to generate it
 if(os.path.isfile('./settings.json') == False):
