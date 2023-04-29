@@ -300,9 +300,11 @@ def main():
                     speaker_event.set()
                     speaker_thread.join()
                     status = "DISARMED"
+                    window['STATUS'].update(status, background_color="green")
                 else:
                     sg.Popup("Welcome back! Sensor " + values["ALARM"] + " went off", keep_on_top = True)
                     status = "DISARMED"
+                    window['STATUS'].update(status, background_color="green")
             else:
                 sg.Popup('Welcome back ' + name + " Sensor " + values["ALARM"] + " went off", keep_on_top = True)
                 status = "DISARMED"
