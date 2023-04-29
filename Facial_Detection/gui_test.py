@@ -317,7 +317,7 @@ def main():
 
 
         # New face button is pressed
-        if event == "New Face":
+        if event == "Add New Face":
             # For each person, enter one numeric face id
             face_id = len(names) + 1
             user_name = values['USER']
