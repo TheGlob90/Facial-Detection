@@ -39,7 +39,7 @@ def main(cascade, names, timeout):
         
             # If confidence is less then 70 ==> "0" : perfect match 
             # The smaller the number confidence needs to be less than, the harder it is to get a match
-            if (confidence < 90):
+            if (confidence < 100):
                 id = names[id - 1]
                 id = id.replace('\n', '')
                 num_of_times.append(id)
