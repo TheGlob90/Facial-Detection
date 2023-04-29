@@ -51,7 +51,7 @@ def threads(thread_name, window, addr):
     while True:
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
-        if ret == '1':
+        if ret == '0':
             window.write_event_value('ALARM', thread_name)
     bc.disconnect(sock)
 
