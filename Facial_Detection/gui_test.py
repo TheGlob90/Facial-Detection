@@ -254,9 +254,8 @@ def main():
                  font=header)],
         [sg.HSeparator(pad=(500,1))],
         [sg.Text('Name: ',
-                 font=default,
-                 size=(200,1)), 
-         sg.InputText(key='USER'), 
+                 font=default), 
+         sg.InputText(key='USER', size=(200,1)), 
          sg.Button("Add New Face")], # Button to add a new face to be trained
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
         [sg.Button("Change settings")], # Button used to change settings
