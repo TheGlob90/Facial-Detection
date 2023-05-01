@@ -92,7 +92,7 @@ class GUI():
         # Create the window and show it without the plot
         self.window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
 
-        self.keyboard = keyboard()
+        # self.keyboard = keyboard()
         self.focus = None
 
 class settingsGUI():
@@ -158,65 +158,65 @@ class settingsGUI():
         # Create the window and show it without the plot
         self.window = sg.Window("Facial Recognition", settings_layout, resizable=True, finalize=True, element_justification='c', border_depth=5)
 
-        self.keyboard = keyboard()
+        # self.keyboard = keyboard()
         self.focus = None
 
-class keyboard():
-    def __init__(self, location=(None, None), font=('Arial', 16)):
-        self.font = font
-        numberRow = '1234567890'
-        topRow = 'QWERTYUIOP'
-        midRow = 'ASDFGHJKL'
-        bottomRow = 'ZXCVBNM'
-        keyboard_layout = [[sg.Button(c, key=c, size=(4, 2), font=self.font) for c in numberRow] + [
-            sg.Button('⌫', key='back', size=(4, 2), font=self.font),
-            sg.Button('Esc', key='close', size=(4, 2), font=self.font)],
-            [sg.Text(' ' * 4)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
-                               topRow] + [sg.Stretch()],
-            [sg.Text(' ' * 11)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
-                                midRow] + [sg.Stretch()],
-            [sg.Text(' ' * 18)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
-                                bottomRow] + [sg.Stretch()]]
+# class keyboard():
+#     def __init__(self, location=(None, None), font=('Arial', 16)):
+#         self.font = font
+#         numberRow = '1234567890'
+#         topRow = 'QWERTYUIOP'
+#         midRow = 'ASDFGHJKL'
+#         bottomRow = 'ZXCVBNM'
+#         keyboard_layout = [[sg.Button(c, key=c, size=(4, 2), font=self.font) for c in numberRow] + [
+#             sg.Button('⌫', key='back', size=(4, 2), font=self.font),
+#             sg.Button('Esc', key='close', size=(4, 2), font=self.font)],
+#             [sg.Text(' ' * 4)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+#                                topRow] + [sg.Stretch()],
+#             [sg.Text(' ' * 11)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+#                                 midRow] + [sg.Stretch()],
+#             [sg.Text(' ' * 18)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+#                                 bottomRow] + [sg.Stretch()]]
 
-        self.window = sg.Window('keyboard', keyboard_layout,
-                                grab_anywhere=True, keep_on_top=True, alpha_channel=0,
-                                no_titlebar=True, element_padding=(0, 0), location=location, finalize=True)
-        self.hide()
+#         self.window = sg.Window('keyboard', keyboard_layout,
+#                                 grab_anywhere=True, keep_on_top=True, alpha_channel=0,
+#                                 no_titlebar=True, element_padding=(0, 0), location=location, finalize=True)
+#         self.hide()
 
-    def _keyboardhandler(self):
-        if self.event is not None:
-            if self.event == 'close':
-                self.hide()
-            elif len(self.event) == 1:
-                self.focus.update(self.focus.Get() + self.event)
-            elif self.event == 'back':
-                Text = self.focus.Get()
-                if len(Text) > 0:
-                    Text = Text[:-1]
-                    self.focus.update(Text)
+#     def _keyboardhandler(self):
+#         if self.event is not None:
+#             if self.event == 'close':
+#                 self.hide()
+#             elif len(self.event) == 1:
+#                 self.focus.update(self.focus.Get() + self.event)
+#             elif self.event == 'back':
+#                 Text = self.focus.Get()
+#                 if len(Text) > 0:
+#                     Text = Text[:-1]
+#                     self.focus.update(Text)
 
-    def hide(self):
-        self.visible = False
-        self.window.Disappear()
+#     def hide(self):
+#         self.visible = False
+#         self.window.Disappear()
 
-    def show(self):
-        self.visible = True
-        self.window.Reappear()
+#     def show(self):
+#         self.visible = True
+#         self.window.Reappear()
 
-    def togglevis(self):
-        if self.visible:
-            self.hide()
-        else:
-            self.show()
+#     def togglevis(self):
+#         if self.visible:
+#             self.hide()
+#         else:
+#             self.show()
 
-    def update(self, focus):
-        self.event, _ = self.window.read(timeout=0)
-        if focus is not None:
-            self.focus = focus
-        self._keyboardhandler()
+#     def update(self, focus):
+#         self.event, _ = self.window.read(timeout=0)
+#         if focus is not None:
+#             self.focus = focus
+#         self._keyboardhandler()
 
-    def close(self):
-        self.window.close()
+#     def close(self):
+#         self.window.close()
 
 # Adds a new face to the facial recgonition
 def newFace(face_id, names, user_name):
@@ -292,16 +292,16 @@ def runSettings():
     settings.window.maximize()
 
     while True:
-        cur_focus = settings.window.find_element_with_focus()
-        if cur_focus is not None:
-            settings.focus = cur_focus
+        # cur_focus = settings.window.find_element_with_focus()
+        # if cur_focus is not None:
+        #     settings.focus = cur_focus
         
         event, values = settings.window.read(timeout=20)  # read the form
-        if settings.focus is not None:
-                settings.keyboard.update(settings.focus)
+        # if settings.focus is not None:
+        #         settings.keyboard.update(settings.focus)
 
-        if event == 'keyboard':
-                settings.keyboard.togglevis()
+        # if event == 'keyboard':
+        #         settings.keyboard.togglevis()
         
         if event == sg.WIN_CLOSED or event == "EXIT":  # if the X button clicked, just exit
             break
@@ -324,7 +324,7 @@ def runSettings():
             writeJSON("settings.json", settings_json)
             settings_saved = True
             break
-    settings.keyboard.close()
+    # settings.keyboard.close()
     settings.window.close()
     if(settings_saved == True):
         os.execv(sys.executable, ['python3'] + sys.argv)
@@ -357,17 +357,17 @@ def main():
     gui.window['TIME'].update(time.strftime('%H:%M:%S'))
 
     while True:
-        cur_focus = gui.window.find_element_with_focus()
-        if cur_focus is not None:
-            gui.focus = cur_focus
+        # cur_focus = gui.window.find_element_with_focus()
+        # if cur_focus is not None:
+        #     gui.focus = cur_focus
 
         event, values = gui.window.read(timeout=10)
 
-        if gui.focus is not None:
-                gui.keyboard.update(gui.focus)
+        # if gui.focus is not None:
+        #         gui.keyboard.update(gui.focus)
 
-        if event == 'keyboard':
-                gui.keyboard.togglevis()
+        # if event == 'keyboard':
+        #         gui.keyboard.togglevis()
 
         # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
@@ -445,7 +445,7 @@ def main():
 
         gui.window['DATE'].update(time.strftime('%B %d, %Y'))
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
-    gui.keyboard.close()
+    # gui.keyboard.close()
     gui.window.close()
 
 # Reads in the cascade file to be used
