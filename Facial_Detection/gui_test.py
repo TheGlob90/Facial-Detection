@@ -31,6 +31,63 @@ settings_values = {
 sensors = {"name": [],
            "address": []}
 
+class keyboard():
+    def __init__(self, location=(None, None), font=('Arial', 16)):
+        self.font = font
+        numberRow = '1234567890'
+        topRow = 'QWERTYUIOP'
+        midRow = 'ASDFGHJKL'
+        bottomRow = 'ZXCVBNM'
+        keyboard_layout = [[sg.Button(c, key=c, size=(4, 2), font=self.font) for c in numberRow] + [
+            sg.Button('⌫', key='back', size=(4, 2), font=self.font),
+            sg.Button('Esc', key='close', size=(4, 2), font=self.font)],
+            [sg.Text(' ' * 4)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+                               topRow] + [sg.Stretch()],
+            [sg.Text(' ' * 11)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+                                midRow] + [sg.Stretch()],
+            [sg.Text(' ' * 18)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+                                bottomRow] + [sg.Stretch()]]
+
+        self.window = sg.Window('keyboard', keyboard_layout,
+                                grab_anywhere=True, keep_on_top=True, alpha_channel=0,
+                                no_titlebar=True, element_padding=(0, 0), location=location, finalize=True)
+        self.hide()
+
+    def _keyboardhandler(self):
+        if self.event is not None:
+            if self.event == 'close':
+                self.hide()
+            elif len(self.event) == 1:
+                self.focus.update(self.focus.Get() + self.event)
+            elif self.event == 'back':
+                Text = self.focus.Get()
+                if len(Text) > 0:
+                    Text = Text[:-1]
+                    self.focus.update(Text)
+
+    def hide(self):
+        self.visible = False
+        self.window.Disappear()
+
+    def show(self):
+        self.visible = True
+        self.window.Reappear()
+
+    def togglevis(self):
+        if self.visible:
+            self.hide()
+        else:
+            self.show()
+
+    def update(self, focus):
+        self.event, _ = self.window.read(timeout=0)
+        if focus is not None:
+            self.focus = focus
+        self._keyboardhandler()
+
+    def close(self):
+        self.window.close()
+
 # Adds a new face to the facial recgonition
 def newFace(face_id, names, user_name):
     # Writes the new name to the text file to be loaded on startup
@@ -259,6 +316,7 @@ def main():
          sg.Button("Add New Face")], # Button to add a new face to be trained
         [sg.Button("Facial Recognition")], # Button to run the facial recognition software
         [sg.Button("Change settings")], # Button used to change settings
+        [sg.Button('on-screen keyboard', key='keyboard')],
         [sg.Button("EXIT")] # Button to Exit the GUI from other screen
     ]                                                                
 
@@ -274,6 +332,9 @@ def main():
 
     while True:
         event, values = window.read(timeout=10)
+
+        if event == 'keyboard':
+                keyboard.togglevis()
 
         # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
