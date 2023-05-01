@@ -288,66 +288,6 @@ def keypad_f(code, timeout):
 def runSettings():
     global settings_values
     settings_saved = False
-    # #Settings Layout
-    # settings_layout = [
-    #                 [sg.Text("Settings", 
-    #                          size=(60, 1), 
-    #                          justification="center",
-    #                          font=header)],
-    #                 [sg.Text("We need to run through some settings to get started.", 
-    #                          size=(50, 1), 
-    #                          font=default_set, 
-    #                          justification="center")],
-    #                 [sg.Text('General', 
-    #                          size=(30,1), 
-    #                          justification="left", 
-    #                          font=header)],
-    #                 [sg.HSeparator(pad=(500, 1))],
-    #                 [sg.Push(), sg.Text('Please enter a name for this device.', 
-    #                          font=default_set), sg.Push(),
-    #                  sg.InputText(default_text = settings_values['device-name'], 
-    #                               key='DEVICENAME', 
-    #                               size=(25,1)), sg.Push()],
-    #                 [sg.Text('Security', 
-    #                          size=(30,1),
-    #                          justification="left", 
-    #                          font=header)],
-    #                 [sg.HSeparator(pad=(500, 1))],
-    #                 [sg.Push(), sg.Text('Please enter a deactivation password.', 
-    #                          font=default_set), sg.Push(),
-    #                  sg.InputText(default_text = settings_values['code'], 
-    #                               key='CODE', 
-    #                               size=(25,1)), sg.Push()],
-    #                 [sg.Push(), sg.Text('Please enter the timeout time for facial detection. DEFAULT:100', 
-    #                          font=default_set), sg.Push(),
-    #                  sg.InputText(default_text = settings_values['face-timeout'], 
-    #                               key='TIMEOUT_F', 
-    #                               size=(25,1)), sg.Push()],
-    #                 [sg.Push(), sg.Text('Please enter the timeout time for passcode. DEFAULT:200',
-    #                          font=default_set), sg.Push(),
-    #                  sg.InputText(default_text = settings_values['code-timeout'], 
-    #                               key='TIMEOUT_P', 
-    #                               size=(25,1)), sg.Push()],
-    #                 [sg.Text('Connect', 
-    #                          size=(30,1), 
-    #                          justification="left", 
-    #                          font=header)],
-    #                 [sg.HSeparator(pad=(500, 1))],
-    #                 [sg.Text("Let's add some sensors to the system!", 
-    #                          size=(60,1), 
-    #                          justification="left",
-    #                          font=default_set)],
-    #                 [sg.Button("Scan for Sensors",
-    #                            font=default)],
-    #                 [sg.Listbox("", 
-    #                             size=(80,5), 
-    #                             key='DEVICES')],
-    #                 [sg.Button("Save Settings"), 
-    #                  sg.Button("EXIT", 
-    #                            size=(10, 1))],                
-    # ]
-
-    # settings = sg.Window("(AI)-larm STARTUP", settings_layout, resizable=True, finalize=True, element_justification='c')
     settings = settingsGUI()
     settings.window.maximize()
 
@@ -408,64 +348,6 @@ def main():
 
     gui = GUI(devicename, status, sensor_list)
 
-    # # Define the window layout for the intro screen.
-    # homescreen = [
-    #     [sg.Text("Welcome to \n(AI)-larm", 
-    #              justification="center", 
-    #              font=("bold", 30))],
-    #     [sg.HSeparator(pad=(500,1))],
-    #     [sg.Text("Device: ", 
-    #              font=default, 
-    #              justification="center"),
-    #      sg.Text(devicename, 
-    #              font=default,
-    #              background_color="teal")],
-    #     [sg.Text("Today is: ", 
-    #              font=default,
-    #              justification='c'),
-    #      sg.Text('', 
-    #              font=default,
-    #              key='DATE',
-    #              background_color="teal")],
-    #     [sg.Text("The current time is: ", 
-    #              font=default,
-    #              justification='c'),
-    #      sg.Text('', 
-    #              font=default,
-    #              key='TIME',
-    #              background_color="teal")],
-    #     [sg.VPush()],
-    #     [sg.Text("System Status", 
-    #              font=header,
-    #              justification='c')],
-    #     [sg.HSeparator(pad=(500,1))],
-    #     [sg.Text("The system is currently ", 
-    #              font=default,
-    #              justification='c'),
-    #      sg.Text(status, 
-    #              font=default,
-    #              key='STATUS',
-    #              background_color="green")],
-    #     [sg.Text("Your sensors: \n" + sensor_list, 
-    #              font=default,
-    #              justification='c')],
-    #     [sg.Button("ARM SYSTEM", font=header)],
-    #     [sg.VPush()],
-    #     [sg.Text("Options", 
-    #              font=header)],
-    #     [sg.HSeparator(pad=(500,1))],
-    #     [sg.Text('Name: ',
-    #              font=default), 
-    #      sg.InputText(key='USER', size=(25,1)), 
-    #      sg.Button("Add New Face")], # Button to add a new face to be trained
-    #     [sg.Button("Facial Recognition")], # Button to run the facial recognition software
-    #     [sg.Button("Change settings")], # Button used to change settings
-    #     [sg.Button('⌨', key='keyboard')],
-    #     [sg.Button("EXIT")] # Button to Exit the GUI from other screen
-    # ]                                                                
-
-    # # Create the window and show it without the plot
-    # window = sg.Window("Facial Recognition", homescreen, resizable=True, finalize=True, element_justification='c', border_depth=5)
     i = 0
     while i < len(sensor_addr):
         threading.Thread(target=threads, args=(sensor_name[i], gui.window, sensor_addr[i],), daemon=True).start()
