@@ -384,6 +384,7 @@ def runSettings():
             writeJSON("settings.json", settings_json)
             settings_saved = True
             break
+    settings.keyboard.close()
     settings.window.close()
     if(settings_saved == True):
         os.execv(sys.executable, ['python3'] + sys.argv)
