@@ -307,7 +307,7 @@ def runSettings():
             break
         if event == "Scan for Sensors":
             scanbt, sensoraddr = bc.scan_devices()
-            settings['DEVICES'].update((scanbt))
+            settings.window['DEVICES'].update((scanbt))
             sensname = []
             for x in range(len(sensoraddr)):
                 sensname.append(sg.popup_get_text("Add a name for the sensor " + sensoraddr[x]))
