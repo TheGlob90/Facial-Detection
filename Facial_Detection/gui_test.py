@@ -291,7 +291,7 @@ def keypad_f(code, timeout):
     return count
 
 # Runs the settings page to allow users to change settings
-def runSettings():
+def runSettings(sensor_event, sensors_threads):
     global settings_values
     settings_saved = False
     settings = settingsGUI()
@@ -333,6 +333,9 @@ def runSettings():
     # settings.keyboard.close()
     settings.window.close()
     if(settings_saved == True):
+        sensor_event.set()
+        for t in sensors_threads:
+            t.join()
         os.execv(sys.executable, ['python3'] + sys.argv)
 
 # Main function that runs the main functionality of the hub
@@ -449,7 +452,7 @@ def main():
 
         # Allows users to change the settings once the device is running
         if event == "Change settings":
-            runSettings()
+            runSettings(sensor_event, sensors_threads)
             # Reads in the code from the .json file
             with open('settings.json', 'r') as f:
                 settings_values = json.load(f)
