@@ -210,8 +210,10 @@ class keyboard():
     def togglevis(self):
         if self.visible:
             self.hide()
+            return False
         else:
             self.show()
+            return True
 
     def update(self, focus):
         self.event, _ = self.window.read(timeout=0)
@@ -380,8 +382,11 @@ def main():
                 gui.keyboard.update(gui.focus)
 
         if event == 'keyboard':
-                gui.keyboard.togglevis()
-                gui.keyboard.window.force_focus()
+                focus = gui.keyboard.togglevis()
+                if focus:
+                    gui.keyboard.window.force_focus()
+                else:
+                    gui.window.force_focus()
 
         # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
