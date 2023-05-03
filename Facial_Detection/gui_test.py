@@ -173,14 +173,14 @@ class keyboard():
         topRow = 'QWERTYUIOP'
         midRow = 'ASDFGHJKL'
         bottomRow = 'ZXCVBNM'
-        keyboard_layout = [[sg.Button(c, key=c, size=(4, 2), font=self.font) for c in numberRow] + [
-            sg.Button('⌫', key='back', size=(4, 2), font=self.font),
-            sg.Button('Esc', key='close', size=(4, 2), font=self.font)],
-            [sg.Text(' ' * 4)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+        keyboard_layout = [[sg.Button(c, key=c, size=(2, 1), font=self.font) for c in numberRow] + [
+            sg.Button('⌫', key='back', size=(2, 1), font=self.font),
+            sg.Button('Esc', key='close', size=(2, 1), font=self.font)],
+            [sg.Text(' ' * 4)] + [sg.Button(c, key=c, size=(2, 1), font=self.font) for c in
                                topRow] + [sg.Stretch()],
-            [sg.Text(' ' * 11)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+            [sg.Text(' ' * 11)] + [sg.Button(c, key=c, size=(2, 1), font=self.font) for c in
                                 midRow] + [sg.Stretch()],
-            [sg.Text(' ' * 18)] + [sg.Button(c, key=c, size=(4, 2), font=self.font) for c in
+            [sg.Text(' ' * 18)] + [sg.Button(c, key=c, size=(2, 1), font=self.font) for c in
                                 bottomRow] + [sg.Stretch()]]
 
         self.window = sg.Window('keyboard', keyboard_layout,
