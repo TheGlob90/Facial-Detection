@@ -233,16 +233,16 @@ def writeJSON(filename, data):
   outfile.close()
 
 # Function each sensor needs to run on for bluetooth connection
-def threads(thread_name, window, addr):
+def threads(thread_name, window, addr, event):
     sock = bc.connect(addr)
-    while True:
+    while not(event.is_set()):
         ret = bc.rx_and_echo(sock)
         ret = ret.decode()
         if ret == '0':
             window.write_event_value('ALARM', thread_name)
     bc.disconnect(sock)
 
-    print("Thread done \n")
+    print("Sensors Disconnected \n")
 
 # Runs the keypad once the alarm has been triggered
 def keypad_f(code, timeout):
@@ -348,9 +348,12 @@ def main():
 
     gui = GUI(devicename, status, sensor_list)
 
+    sensor_event = threading.Event()
     i = 0
+    sensors_threads = []
     while i < len(sensor_addr):
-        threading.Thread(target=threads, args=(sensor_name[i], gui.window, sensor_addr[i],), daemon=True).start()
+        thread = threading.Thread(target=threads, args=(sensor_name[i], gui.window, sensor_addr[i], sensor_event,), daemon=True).start()
+        sensors_threads.append(thread)
         i = i + 1
     gui.window.Maximize()
     gui.window['DATE'].update(time.strftime('%B:%d:%Y'))
@@ -445,6 +448,9 @@ def main():
 
         gui.window['DATE'].update(time.strftime('%B %d, %Y'))
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
+    sensor_event.set()
+    for t in sensors_threads:
+        t.join()
     # gui.keyboard.close()
     gui.window.close()
 
