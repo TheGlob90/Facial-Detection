@@ -167,7 +167,7 @@ class settingsGUI():
         self.focus = None
 
 class keyboard():
-    def __init__(self, location=(None, None), font=('Arial', 16)):
+    def __init__(self, location=(None, None), font=('Arial', 10)):
         self.font = font
         numberRow = '1234567890'
         topRow = 'QWERTYUIOP'
@@ -366,7 +366,7 @@ def main():
         thread.start()
         sensors_threads.append(thread)
         i = i + 1
-    # gui.window.Maximize()
+    gui.window.Maximize()
     gui.window['DATE'].update(time.strftime('%B:%d:%Y'))
     gui.window['TIME'].update(time.strftime('%H:%M:%S'))
 
