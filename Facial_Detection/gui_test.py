@@ -359,7 +359,8 @@ def main():
     i = 0
     sensors_threads = []
     while i < len(sensor_addr):
-        thread = threading.Thread(target=threads, args=(sensor_name[i], gui.window, sensor_addr[i], sensor_event,), daemon=True).start()
+        thread = threading.Thread(target=threads, args=(sensor_name[i], gui.window, sensor_addr[i], sensor_event,), daemon=True)
+        thread.start()
         sensors_threads.append(thread)
         i = i + 1
     gui.window.Maximize()
@@ -457,7 +458,7 @@ def main():
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
     sensor_event.set()
     for t in sensors_threads:
-        t[0].join()
+        t.join()
     # gui.keyboard.close()
     gui.window.close()
 
