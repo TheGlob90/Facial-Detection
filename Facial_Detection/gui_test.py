@@ -456,7 +456,7 @@ def main():
                 sg.Popup('Welcome back ' + name, keep_on_top = True)
 
         # Allows users to change the settings once the device is running
-        if event == "Change settings":
+        if event == "Change settings" and status == "DISARMED":
             runSettings(sensor_event, sensors_threads)
             # Reads in the code from the .json file
             with open('settings.json', 'r') as f:
@@ -466,9 +466,9 @@ def main():
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
     sensor_event.set()
     gui.keyboard.close()
+    gui.window.close()
     for t in sensors_threads:
         t.join()
-    gui.window.close()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
