@@ -384,9 +384,9 @@ def main():
         if event == 'keyboard':
                 focus = gui.keyboard.togglevis()
                 if focus:
-                    gui.keyboard.window.force_focus()
+                    gui.keyboard.window.FocusSet()
                 else:
-                    gui.window.force_focus()
+                    gui.window.FocusSet()
 
         # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
@@ -465,7 +465,6 @@ def main():
         gui.window['DATE'].update(time.strftime('%B %d, %Y'))
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
     sensor_event.set()
-    gui.keyboard.window.force_focus()
     gui.keyboard.close()
     for t in sensors_threads:
         t.join()
