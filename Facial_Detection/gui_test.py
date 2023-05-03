@@ -366,7 +366,7 @@ def main():
         thread.start()
         sensors_threads.append(thread)
         i = i + 1
-    # gui.window.Maximize()
+    gui.window.Maximize()
     gui.window['DATE'].update(time.strftime('%B:%d:%Y'))
     gui.window['TIME'].update(time.strftime('%H:%M:%S'))
 
