@@ -18,7 +18,7 @@ header=("bold", 25)
 default=('Any', 15)
 default_set=('Any', 8)
 
-
+# Global settings values that is used to load settings from the .json file
 settings_values = {
                         "device-name": "",
                         "code": "",
@@ -28,9 +28,12 @@ settings_values = {
                         "names": []
             }
 
+# Global that holds sensor information for the hub to connect to sensors
 sensors = {"name": [],
            "address": []}
 
+# Class for the main GUI that runs
+# Needed for a virtual keyboard to work properly through PySimpleGUI
 class GUI():
     def __init__(self, devicename, status, sensor_list):
         # Define the window layout for the intro screen.
@@ -95,6 +98,8 @@ class GUI():
         # self.keyboard = keyboard()
         self.focus = None
 
+# Class for the settings page that runs
+# Needed for a virtual keyboard to work properly through PySimpleGUI
 class settingsGUI():
     def __init__(self):
         settings_layout = [
@@ -285,6 +290,7 @@ def keypad_f(code, timeout):
     keypad.close()
     return count
 
+# Runs the settings page to allow users to change settings
 def runSettings():
     global settings_values
     settings_saved = False
@@ -329,6 +335,7 @@ def runSettings():
     if(settings_saved == True):
         os.execv(sys.executable, ['python3'] + sys.argv)
 
+# Main function that runs the main functionality of the hub
 def main():
     global settings_values
     names = settings_values['names']
@@ -462,9 +469,11 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 if(os.path.isfile('./settings.json') == False):
         runSettings()
 
+# Load the settings and store in our global
 with open('settings.json', 'r') as f:
     settings_values = json.load(f)
 
+# Run main
 main()
 
 print("ENDED")
