@@ -466,9 +466,9 @@ def main():
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
     sensor_event.set()
     gui.keyboard.close()
-    gui.window.close()
     for t in sensors_threads:
         t.join()
+    gui.window.close()
 
 # Reads in the cascade file to be used
 cascPath = sys.argv[1]
