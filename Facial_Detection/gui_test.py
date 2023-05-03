@@ -457,7 +457,7 @@ def main():
         gui.window['TIME'].update(time.strftime('%H:%M:%S'))
     sensor_event.set()
     for t in sensors_threads:
-        t.join()
+        t[0].join()
     # gui.keyboard.close()
     gui.window.close()
 
