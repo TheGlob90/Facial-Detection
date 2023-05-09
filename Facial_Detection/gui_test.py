@@ -384,9 +384,9 @@ def main():
         if event == 'keyboard':
                 focus = gui.keyboard.togglevis()
                 if focus:
-                    gui.keyboard.window.FocusSet()
+                    gui.keyboard.window.force_focus()
                 else:
-                    gui.window.FocusSet()
+                    gui.window.force_focus()
 
         # Arm the system to allow alarms to be triggered
         if(event == "ARM SYSTEM"):
