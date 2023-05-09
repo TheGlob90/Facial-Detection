@@ -308,7 +308,11 @@ def runSettings(sensor_event, sensors_threads):
                 settings.keyboard.update(settings.focus)
 
         if event == 'keyboard':
-                settings.keyboard.togglevis()
+                focus = settings.keyboard.togglevis()
+                if focus:
+                    settings.keyboard.window.force_focus()
+                else:
+                    settings.window.force_focus()
         
         if event == sg.WIN_CLOSED or event == "EXIT":  # if the X button clicked, just exit
             break
