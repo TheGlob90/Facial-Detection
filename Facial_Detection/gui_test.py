@@ -183,7 +183,7 @@ class keyboard():
             [sg.Text(' ' * 18)] + [sg.Button(c, key=c, size=(2, 1), font=self.font) for c in
                                 bottomRow] + [sg.Stretch()]]
         
-        location = (0, -50)
+        location = (0, -10)
         self.window = sg.Window('keyboard', keyboard_layout, keep_on_top=True, alpha_channel=0,
                                 no_titlebar=True, element_padding=(0, 0), location=location, finalize=True)
         self.hide()
